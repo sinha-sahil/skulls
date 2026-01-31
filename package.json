@@ -1,0 +1,33 @@
+{
+  "name": "skulls",
+  "version": "1.0.0",
+  "description": "Planning templates and guidance for LLM-assisted software development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "markdownlint \"**/*.md\"",
+    "lint:fix": "markdownlint \"**/*.md\" --fix"
+  },
+  "keywords": [
+    "llm",
+    "ai",
+    "planning",
+    "templates",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "Sahil Sinha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sinha-sahil/skulls.git"
+  },
+  "homepage": "https://github.com/sinha-sahil/skulls#readme",
+  "bugs": {
+    "url": "https://github.com/sinha-sahil/skulls/issues"
+  },
+  "packageManager": "pnpm@10.5.2",
+  "devDependencies": {
+    "markdownlint-cli": "^0.47.0"
+  }
+}

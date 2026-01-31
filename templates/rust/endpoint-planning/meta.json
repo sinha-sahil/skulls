@@ -1,0 +1,24 @@
+{
+  "name": "endpoint-planning",
+  "description": "Plan and document a new API endpoint implementation",
+  "use_cases": [
+    "adding a new endpoint",
+    "creating an API route",
+    "implementing a handler",
+    "new REST endpoint",
+    "API planning"
+  ],
+  "phases": [
+    { "file": "01-environment-setup.md", "name": "Environment Setup" },
+    { "file": "02-type-definitions.md", "name": "Type Definitions" },
+    { "file": "03-storage-layer.md", "name": "Storage Layer" },
+    { "file": "04-handler.md", "name": "Handler" },
+    { "file": "05-router.md", "name": "Router" },
+    { "file": "06-api-documentation.md", "name": "API Documentation" }
+  ],
+  "verification": [
+    { "command": "cargo check", "description": "Verify code compiles without errors" },
+    { "command": "cargo clippy", "description": "Run linter to check for common issues" },
+    { "command": "cargo test", "description": "Run tests to verify functionality" }
+  ]
+}

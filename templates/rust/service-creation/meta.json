@@ -1,0 +1,30 @@
+{
+  "name": "service-creation",
+  "description": "Plan and implement a new service module with full CRUD operations",
+  "use_cases": [
+    "creating a new service",
+    "adding a new module",
+    "building CRUD functionality",
+    "implementing background jobs",
+    "new service module",
+    "database operations"
+  ],
+  "phases": [
+    { "file": "01-types.md", "name": "Types" },
+    { "file": "02-storage.md", "name": "Storage" },
+    { "file": "03-helpers.md", "name": "Helpers" },
+    { "file": "04-handlers.md", "name": "Handlers" },
+    { "file": "05-router.md", "name": "Router" },
+    { "file": "06-middleware.md", "name": "Middleware" },
+    { "file": "07-remote.md", "name": "Remote Calls" },
+    { "file": "08-scheduler.md", "name": "Scheduler" },
+    { "file": "09-integration.md", "name": "Integration" },
+    { "file": "10-database.md", "name": "Database" }
+  ],
+  "verification": [
+    { "command": "cargo check", "description": "Verify code compiles without errors" },
+    { "command": "cargo clippy", "description": "Run linter to check for common issues" },
+    { "command": "cargo test", "description": "Run tests to verify functionality" },
+    { "command": "cargo fmt --check", "description": "Check code formatting" }
+  ]
+}

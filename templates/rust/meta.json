@@ -1,0 +1,26 @@
+{
+  "language": "rust",
+  "templates": {
+    "endpoint-planning": {
+      "description": "Plan and document a new API endpoint implementation",
+      "use_cases": [
+        "adding a new endpoint",
+        "creating an API route",
+        "implementing a handler",
+        "new REST endpoint",
+        "API planning"
+      ]
+    },
+    "service-creation": {
+      "description": "Plan and implement a new service module with full CRUD operations",
+      "use_cases": [
+        "creating a new service",
+        "adding a new module",
+        "building CRUD functionality",
+        "implementing background jobs",
+        "new service module",
+        "database operations"
+      ]
+    }
+  }
+}

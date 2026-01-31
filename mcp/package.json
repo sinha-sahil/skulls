@@ -1,0 +1,68 @@
+{
+  "name": "skulls",
+  "version": "1.0.4",
+  "description": "MCP server for Skulls planning templates",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "skulls": "./build/index.js"
+  },
+  "scripts": {
+    "prebuild": "rm -rf templates && cp -r ../templates .",
+    "build": "rollup -c",
+    "watch": "rollup -c --watch",
+    "start": "node build/index.js",
+    "dev": "tsx src/index.ts",
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "planning",
+    "templates",
+    "llm",
+    "ai"
+  ],
+  "author": "Sahil Sinha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sinha-sahil/skulls.git"
+  },
+  "homepage": "https://github.com/sinha-sahil/skulls#readme",
+  "bugs": {
+    "url": "https://github.com/sinha-sahil/skulls/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "rollup": "^4.57.1",
+    "rollup-plugin-dts": "^6.3.0",
+    "tslib": "^2.8.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.54.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "build",
+    "templates"
+  ]
+}

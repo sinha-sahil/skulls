@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "languages": {
+    "rust": {
+      "description": "Backend API development with Axum framework, SQLx, and PostgreSQL"
+    },
+    "svelte": {
+      "description": "Svelte 5 component development with runes and TypeScript"
+    },
+    "sveltekit": {
+      "description": "Full-stack SvelteKit application development"
+    },
+    "typescript": {
+      "description": "TypeScript type patterns and utilities"
+    },
+    "javascript": {
+      "description": "JavaScript utility patterns and best practices"
+    },
+    "css": {
+      "description": "CSS styling conventions and patterns"
+    },
+    "html": {
+      "description": "HTML structure, semantics, and accessibility"
+    }
+  }
+}
