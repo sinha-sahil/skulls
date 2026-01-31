@@ -5,6 +5,11 @@ node_modules/
 build/
 dist/
 
+# MCP build artifacts (copied from root during prebuild)
+mcp/templates/
+mcp/assets/
+mcp/README.md
+
 # Environment files
 .env
 .env.local

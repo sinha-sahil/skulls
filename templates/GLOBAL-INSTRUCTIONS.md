@@ -2,6 +2,42 @@
 
 **CRITICAL: These instructions are MANDATORY for ALL planning sessions.**
 
+## Code Quality Standards
+
+### Comments Policy
+
+**Code MUST be self-explanatory. Avoid redundant comments.**
+
+- DO NOT add comments that describe what the code obviously does
+- DO NOT add comments for standard patterns, CRUD operations, or typical logic
+- ONLY add comments when something exceptional or non-obvious is happening
+- If code needs a comment to be understood, consider rewriting it to be clearer first
+
+**Bad examples (DO NOT do this):**
+
+```rust
+// Create a new user
+let user = User::new(name, email);
+
+// Save to database
+db.save(&user).await?;
+
+// Return the user
+Ok(user)
+```
+
+**Good examples (comments only where truly needed):**
+
+```rust
+let user = User::new(name, email);
+db.save(&user).await?;
+
+// Delay response to prevent timing attacks on user enumeration
+tokio::time::sleep(Duration::from_millis(100)).await;
+
+Ok(user)
+```
+
 ## Plan Output Structure
 
 ### IMPORTANT: Service Name is a DIRECTORY, Not a Filename Prefix

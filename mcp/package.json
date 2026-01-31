@@ -1,6 +1,6 @@
 {
   "name": "skulls",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "MCP server for Skulls planning templates",
   "type": "module",
   "main": "build/index.js",
@@ -8,7 +8,7 @@
     "skulls": "./build/index.js"
   },
   "scripts": {
-    "prebuild": "rm -rf templates && cp -r ../templates .",
+    "prebuild": "rm -rf templates assets && cp -r ../templates . && cp -r ../assets . && cp ../README.md .",
     "build": "rollup -c",
     "watch": "rollup -c --watch",
     "start": "node build/index.js",
@@ -63,6 +63,8 @@
   },
   "files": [
     "build",
-    "templates"
+    "templates",
+    "assets",
+    "README.md"
   ]
 }

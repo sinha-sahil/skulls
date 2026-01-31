@@ -152,6 +152,18 @@ Use this to:
                         "Include checklist.md with trackable - [ ] items",
                         "NEVER try to write somewhere you don't have permission",
                       ],
+                      codeQuality: {
+                        comments: {
+                          rule: "Code MUST be self-explanatory. NO redundant comments.",
+                          guidelines: [
+                            "DO NOT comment obvious code (CRUD, standard patterns)",
+                            "ONLY comment exceptional or non-obvious behavior",
+                            "If code needs a comment, consider rewriting it first",
+                          ],
+                          bad: "// Create user\\nlet user = User::new();",
+                          good: "let user = User::new();\\n// Delay to prevent timing attacks\\nsleep(100).await;",
+                        },
+                      },
                     },
                     globalInstructions,
                   },
