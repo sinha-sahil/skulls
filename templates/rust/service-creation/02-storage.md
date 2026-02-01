@@ -4,6 +4,22 @@
 
 **Can be implemented in parallel with:** Step 6, Step 7, Step 8
 
+## Purpose
+
+The storage layer is the **single source of truth for ALL data persistence operations**.
+
+This file contains:
+
+- **Database queries** - All PostgreSQL operations (SELECT, INSERT, UPDATE, DELETE)
+- **File storage** - S3, GCS, or any cloud storage operations
+- **Cache operations** - Redis get/set/delete operations
+- **File system** - Local file read/write operations
+
+**IMPORTANT:** ALL queries and storage operations MUST be written in this file. Handlers should
+NEVER contain raw SQL queries or direct storage client calls - they call functions defined here.
+
+---
+
 ## 2.1 Insert Operations
 
 ```rust

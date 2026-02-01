@@ -1,0 +1,16 @@
+{
+  "language": "sveltekit",
+  "templates": {
+    "client-module": {
+      "description": "Plan and implement a client-side module with stores, API integration, and UI components",
+      "use_cases": [
+        "creating a new client module",
+        "adding frontend functionality",
+        "building reusable UI components",
+        "implementing state management",
+        "API integration on client",
+        "new feature module"
+      ]
+    }
+  }
+}

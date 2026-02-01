@@ -4,6 +4,8 @@
 
 Create storage functions for {{DESCRIPTION}}.
 
+**This file is the single source of truth for ALL data persistence operations.**
+
 ## Status
 
 🔴 Not Started
@@ -12,16 +14,29 @@ Create storage functions for {{DESCRIPTION}}.
 
 - Environment setup (if using S3 or external storage)
 
+## Purpose
+
+The storage layer contains ALL code related to storing and retrieving data:
+
+- **Database operations** - PostgreSQL queries (SELECT, INSERT, UPDATE, DELETE)
+- **File storage** - AWS S3, GCS, or any cloud storage operations
+- **Cache operations** - Redis get/set operations
+- **File system** - Local file read/write operations
+
+**IMPORTANT:** ALL queries and storage operations MUST be written in this file. Handlers should
+NEVER contain raw SQL queries or direct storage client calls - they should only call functions
+defined here.
+
 ## When to Use This Template
 
-Use this template when your endpoint needs:
+**ALWAYS** use this template. Every endpoint that reads or writes data needs a storage layer.
 
-- AWS S3 storage operations
-- External API calls
-- File system operations
-- Non-database persistence
+Examples:
 
-**Skip this template if:** Your endpoint only uses PostgreSQL/Redis (handle in handler directly).
+- Fetching user data from PostgreSQL → storage layer
+- Uploading images to S3 → storage layer
+- Caching API responses in Redis → storage layer
+- Reading configuration from a file → storage layer
 
 ---
 
