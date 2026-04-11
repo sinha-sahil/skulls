@@ -1,0 +1,27 @@
+{
+  "name": "major-change-prereqs",
+  "description": "Pre-requisites audit for major SvelteKit changes: deps, configs, breaking impact, CI/CD, validation",
+  "use_cases": [
+    "SvelteKit 1 to 2 upgrade",
+    "Svelte 4 to 5 upgrade in a SvelteKit app",
+    "major Vite / TypeScript / Node bump",
+    "adapter or deployment target change",
+    "breaking-change impact quantification",
+    "CI/CD readiness before a disruptive change",
+    "go / no-go on a large refactor or upgrade"
+  ],
+  "phases": [
+    { "file": "01-dependency-audit.md", "name": "Dependency Audit" },
+    { "file": "02-config-changes.md", "name": "Config Changes" },
+    { "file": "03-breaking-changes-impact.md", "name": "Breaking Changes Impact" },
+    { "file": "04-ci-cd-changes.md", "name": "CI/CD Changes" },
+    { "file": "05-validation-strategy.md", "name": "Validation Strategy" }
+  ],
+  "verification": [
+    { "command": "pnpm install --dry-run", "description": "Resolve dep tree without conflicts" },
+    { "command": "pnpm build", "description": "Production build exits 0" },
+    { "command": "pnpm check", "description": "svelte-check passes on target versions" },
+    { "command": "pnpm lint", "description": "No new lint errors from config changes" },
+    { "command": "ls .svelte-kit/output/", "description": "Adapter output present in expected shape" }
+  ]
+}

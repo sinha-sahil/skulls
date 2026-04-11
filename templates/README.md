@@ -8,7 +8,7 @@ Project templates and standards organized by language/technology.
 |----------|-------------|--------|
 | [rust](./rust/) | Backend API templates (Axum, SQLx) | Active |
 | [svelte](./svelte/) | Svelte 5 component templates | Planned |
-| [sveltekit](./sveltekit/) | SvelteKit application templates | Planned |
+| [sveltekit](./sveltekit/) | SvelteKit application templates | Active |
 | [typescript](./typescript/) | TypeScript type patterns | Planned |
 | [javascript](./javascript/) | JavaScript utility patterns | Planned |
 | [css](./css/) | CSS styling conventions | Planned |

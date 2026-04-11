@@ -11,6 +11,18 @@
         "API integration on client",
         "new feature module"
       ]
+    },
+    "major-change-prereqs": {
+      "description": "Pre-requisites audit for major SvelteKit changes: deps, configs, breaking impact, CI/CD, validation",
+      "use_cases": [
+        "SvelteKit 1 to 2 upgrade",
+        "Svelte 4 to 5 upgrade in a SvelteKit app",
+        "major Vite / TypeScript / Node bump",
+        "adapter or deployment target change",
+        "breaking-change impact quantification",
+        "CI/CD readiness before a disruptive change",
+        "go / no-go on a large refactor or upgrade"
+      ]
     }
   }
 }
