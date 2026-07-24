@@ -11,6 +11,17 @@
         "API integration on client",
         "new feature module"
       ]
+    },
+    "migration": {
+      "description": "Plan and execute a migration in any SvelteKit codebase: replace an old externally-driven surface (a package, dependency version, tool, codegen pipeline, or framework API) with a new one across every coupled site, coordinated via a shared checklist, and retire the old surface. Stack-agnostic — the repo's tools, commands, and conventions are discovered, not assumed.",
+      "use_cases": [
+        "migrating from one package or library to another",
+        "upgrading a dependency across a breaking major version",
+        "migrating hand-written code into a codegen pipeline",
+        "adopting a new framework API or pattern tied to a version bump",
+        "repointing every consumer off a deprecated surface, then deleting it",
+        "any adopt-the-new-external-surface-and-remove-the-old-version job across many sites"
+      ]
     }
   }
 }
