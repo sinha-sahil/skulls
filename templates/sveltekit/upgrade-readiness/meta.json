@@ -1,0 +1,27 @@
+{
+  "name": "upgrade-readiness",
+  "description": "Readiness audit and go/no-go for major SvelteKit changes: deps, configs, breaking impact, CI/CD, validation. Precedes a migration/refactor execution plan.",
+  "use_cases": [
+    "SvelteKit 1 to 2 upgrade",
+    "Svelte 4 to 5 upgrade in a SvelteKit app",
+    "major Vite / TypeScript / Node bump",
+    "adapter or deployment target change",
+    "breaking-change impact quantification",
+    "CI/CD readiness before a disruptive change",
+    "go / no-go on a large refactor or upgrade"
+  ],
+  "phases": [
+    { "file": "01-dependency-audit.md", "name": "Dependency Audit" },
+    { "file": "02-config-changes.md", "name": "Config Changes" },
+    { "file": "03-breaking-changes-impact.md", "name": "Breaking Changes Impact" },
+    { "file": "04-ci-cd-changes.md", "name": "CI/CD Changes" },
+    { "file": "05-validation-strategy.md", "name": "Validation Strategy" }
+  ],
+  "verification": [
+    { "command": "<pm> install --dry-run", "description": "Resolve dep tree without conflicts (<pm> = the repo's package manager, detected in Phase 1)" },
+    { "command": "<pm> build", "description": "Production build exits 0" },
+    { "command": "<pm> check", "description": "svelte-check passes on target versions" },
+    { "command": "<pm> lint", "description": "No new lint errors from config changes" },
+    { "command": "ls .svelte-kit/output/", "description": "Adapter output present in expected shape" }
+  ]
+}
