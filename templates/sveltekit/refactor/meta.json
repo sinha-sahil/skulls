@@ -1,0 +1,26 @@
+{
+  "name": "refactor",
+  "description": "Plan and execute an internal-driven refactor in any SvelteKit codebase: reshape, rename, extract, move, or deduplicate code across every affected site while keeping observable behavior byte-for-byte identical, coordinated via a shared checklist. No external dependency, tool, or API change. Stack-agnostic — the repo's tools, commands, and conventions are discovered, not assumed.",
+  "use_cases": [
+    "extracting or splitting a module; restructuring directory layout (e.g. service to module architecture)",
+    "renaming a symbol, type, or module across the codebase",
+    "moving code to a canonical internal home and repointing consumers",
+    "deduplicating repeated helpers/types into a single canonical version",
+    "reshaping an internal API or normalizing conventions without changing behavior",
+    "large-scale internal cleanup coordinated across many owners and PRs",
+    "any 'reorganize the code without changing what it does' job"
+  ],
+  "phases": [
+    { "file": "01-discover-and-scope.md", "name": "Discover & Scope" },
+    { "file": "02-inventory-and-mapping.md", "name": "Inventory & Mapping" },
+    { "file": "03-sequencing.md", "name": "Sequencing" },
+    { "file": "04-execute-and-transform.md", "name": "Execute & Transform" },
+    { "file": "05-verify-and-cleanup.md", "name": "Verify & Cleanup" }
+  ],
+  "verification": [
+    { "command": "<typecheck>", "description": "The repo's typecheck command, detected in Phase 1 (e.g. a svelte-check script) — must be clean" },
+    { "command": "<lint>", "description": "The repo's lint command, detected in Phase 1 — catches dangling imports off moved/renamed code" },
+    { "command": "<test>", "description": "The repo's test command, detected in Phase 1 — must match the pre-refactor baseline exactly (behavior is invariant)" },
+    { "command": "grep -rn \"<old-internal-path>\" src/ --include=*.ts --include=*.svelte --include=*.js", "description": "Cleanup gate: zero references to a relocated/renamed unit's old path remain before the old location is removed" }
+  ]
+}
