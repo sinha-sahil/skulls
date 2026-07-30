@@ -11,6 +11,28 @@
         "API integration on client",
         "new feature module"
       ]
+    },
+    "migration": {
+      "description": "Plan and execute a migration in any SvelteKit codebase: replace an old externally-driven surface (a package, dependency version, tool, codegen pipeline, or framework API) with a new one across every coupled site, coordinated via a shared checklist, and retire the old surface. Stack-agnostic — the repo's tools, commands, and conventions are discovered, not assumed.",
+      "use_cases": [
+        "migrating from one package or library to another",
+        "upgrading a dependency across a breaking major version",
+        "migrating hand-written code into a codegen pipeline",
+        "adopting a new framework API or pattern tied to a version bump",
+        "repointing every consumer off a deprecated surface, then deleting it",
+        "any adopt-the-new-external-surface-and-remove-the-old-version job across many sites"
+      ]
+    },
+    "refactor": {
+      "description": "Plan and execute an internal-driven refactor in any SvelteKit codebase: reshape, rename, extract, move, or deduplicate code across every affected site while keeping observable behavior byte-for-byte identical, coordinated via a shared checklist. No external dependency, tool, or API change. Stack-agnostic — the repo's tools, commands, and conventions are discovered, not assumed.",
+      "use_cases": [
+        "extracting or splitting a module; restructuring directory layout (service to module architecture)",
+        "renaming a symbol, type, or module across the codebase",
+        "moving code to a canonical internal home and repointing consumers",
+        "deduplicating repeated helpers or types into a single canonical version",
+        "reshaping an internal API or normalizing conventions without changing behavior",
+        "any reorganize-the-code-without-changing-what-it-does job across many sites"
+      ]
     }
   }
 }

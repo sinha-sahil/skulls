@@ -1,0 +1,26 @@
+{
+  "name": "migration",
+  "description": "Plan and execute a migration in any SvelteKit codebase: replace an old externally-driven surface (a package, dependency version, tool, codegen pipeline, or framework API) with a new one across every coupled site, coordinated via a shared checklist, and retire the old surface. Stack-agnostic — the repo's tools, commands, and conventions are discovered, not assumed.",
+  "use_cases": [
+    "migrating from one package/library to another (e.g. one HTTP client, date lib, or UI kit to another)",
+    "upgrading a dependency across a breaking major version",
+    "migrating hand-written code into a codegen pipeline",
+    "adopting a new framework API or pattern tied to a version bump (e.g. a runes-style rewrite)",
+    "moving a coupled surface to a new tool or convention and retiring the old one",
+    "repointing every consumer off a deprecated surface, then deleting it",
+    "any 'adopt the new external surface and remove the old version' job across many sites"
+  ],
+  "phases": [
+    { "file": "01-discover-and-scope.md", "name": "Discover & Scope" },
+    { "file": "02-inventory-and-mapping.md", "name": "Inventory & Mapping" },
+    { "file": "03-sequencing.md", "name": "Sequencing" },
+    { "file": "04-execute-and-repoint.md", "name": "Execute & Repoint" },
+    { "file": "05-verify-and-retire.md", "name": "Verify & Retire" }
+  ],
+  "verification": [
+    { "command": "<typecheck>", "description": "The repo's typecheck command, detected in Phase 1 (e.g. a svelte-check script) — must be clean" },
+    { "command": "<lint>", "description": "The repo's lint command, detected in Phase 1 — catches dangling imports off the old surface" },
+    { "command": "<test>", "description": "The repo's test command, detected in Phase 1 — proves the migration's behavior contract (preserved, or matching the expected deltas)" },
+    { "command": "grep -rn \"<old-surface-token>\" src/ --include=*.ts --include=*.svelte --include=*.js", "description": "Global gate before retire: zero references to the old surface remain anywhere it should not" }
+  ]
+}
