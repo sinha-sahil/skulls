@@ -1,0 +1,30 @@
+{
+  "name": "code-review",
+  "description": "Review a branch or pull request against the project's written standards and the Skulls Svelte baseline, then fix what the review finds",
+  "use_cases": [
+    "code review",
+    "standards review",
+    "pull request review",
+    "review before merge",
+    "check against coding standards",
+    "audit a branch"
+  ],
+  "phases": [
+    { "file": "01-standards.md", "name": "Standards" },
+    { "file": "02-scope.md", "name": "Scope" },
+    { "file": "03-structure.md", "name": "Structure" },
+    { "file": "04-svelte.md", "name": "Svelte" },
+    { "file": "05-typescript.md", "name": "TypeScript" },
+    { "file": "06-styling.md", "name": "Styling" },
+    { "file": "07-tests.md", "name": "Tests" },
+    { "file": "08-plans-and-docs.md", "name": "Plans and Docs" },
+    { "file": "09-commits-and-pr.md", "name": "Commits and Pull Request" },
+    { "file": "10-report-and-fix.md", "name": "Report and Fix" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Type-check with svelte-check" },
+    { "command": "pnpm lint", "description": "Run the linters (ESLint, Stylelint)" },
+    { "command": "pnpm test", "description": "Run the test suite" },
+    { "command": "pnpm build", "description": "Build the app" }
+  ]
+}

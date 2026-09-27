@@ -125,6 +125,13 @@ Skulls exposes an MCP server with tools organized into three phases:
 | `endpoint-planning` | Adding new API endpoints (Axum, SQLx, PostgreSQL) |
 | `service-creation` | Creating new services/modules |
 
+### SvelteKit
+
+| Template | Use Case |
+|----------|----------|
+| `client-module` | Client-side modules with stores, API integration and UI components |
+| `code-review` | Reviewing a branch or pull request against the project's standards, then fixing the findings |
+
 ## Roadmap
 
 ### Languages
@@ -138,6 +145,7 @@ Skulls exposes an MCP server with tools organized into three phases:
 
 - [x] API endpoint planning
 - [x] Service/module creation
+- [x] Code review against project standards
 - [ ] Database migrations
 - [ ] Authentication flows
 - [ ] Testing strategies
