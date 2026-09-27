@@ -11,6 +11,17 @@
         "API integration on client",
         "new feature module"
       ]
+    },
+    "code-review": {
+      "description": "Review a branch or pull request against the project's written standards and the Skulls Svelte baseline, then fix what the review finds",
+      "use_cases": [
+        "code review",
+        "standards review",
+        "pull request review",
+        "review before merge",
+        "check against coding standards",
+        "audit a branch"
+      ]
     }
   }
 }
