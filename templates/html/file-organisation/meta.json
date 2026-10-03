@@ -1,0 +1,17 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and document the file and template organisation for an HTML project",
+  "use_cases": ["organising HTML files", "template structure", "site organisation", "document structure", "restructuring markup", "file structure planning"],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "htmlhint .", "description": "Run HTMLHint to check for issues" },
+    { "command": "pnpm build", "description": "Verify build succeeds" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "refactoring-plan",
+  "description": "Plan and execute a structured code refactoring effort in a SvelteKit project",
+  "use_cases": [
+    "refactoring code",
+    "reducing technical debt",
+    "improving code quality",
+    "migrating to Svelte 5",
+    "cleaning up code",
+    "code modernisation"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-goals.md", "name": "Goals" },
+    { "file": "03-impact-analysis.md", "name": "Impact Analysis" },
+    { "file": "04-strategy.md", "name": "Strategy" },
+    { "file": "05-execution-plan.md", "name": "Execution Plan" },
+    { "file": "06-testing-strategy.md", "name": "Testing Strategy" },
+    { "file": "07-rollback-plan.md", "name": "Rollback Plan" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Run svelte-check for type errors" },
+    { "command": "pnpm lint", "description": "Run linter to check for issues" },
+    { "command": "pnpm test", "description": "Run tests to verify functionality" },
+    { "command": "pnpm build", "description": "Verify production build succeeds" }
+  ]
+}

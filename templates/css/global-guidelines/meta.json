@@ -1,0 +1,25 @@
+{
+  "name": "global-guidelines",
+  "description": "Establish and document CSS coding standards, conventions, and best practices for a project",
+  "use_cases": [
+    "coding standards",
+    "CSS conventions",
+    "style guide",
+    "best practices",
+    "team guidelines",
+    "design system standards"
+  ],
+  "phases": [
+    { "file": "01-code-style.md", "name": "Code Style" },
+    { "file": "02-design-tokens.md", "name": "Design Tokens" },
+    { "file": "03-fallbacks-and-progressive-enhancement.md", "name": "Fallbacks & Progressive Enhancement" },
+    { "file": "04-testing.md", "name": "Testing" },
+    { "file": "05-performance.md", "name": "Performance" },
+    { "file": "06-security.md", "name": "Security" },
+    { "file": "07-documentation.md", "name": "Documentation" }
+  ],
+  "verification": [
+    { "command": "stylelint .", "description": "Run stylelint to check for issues" },
+    { "command": "pnpm build", "description": "Verify build succeeds" }
+  ]
+}

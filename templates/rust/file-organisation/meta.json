@@ -1,0 +1,26 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and document the file and module organisation for a Rust project or workspace",
+  "use_cases": [
+    "organising project files",
+    "structuring a new crate",
+    "workspace layout",
+    "module organisation",
+    "restructuring project",
+    "file structure planning"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "cargo check", "description": "Verify code compiles without errors" },
+    { "command": "cargo clippy", "description": "Run linter to check for common issues" },
+    { "command": "cargo test", "description": "Run tests to verify functionality" },
+    { "command": "cargo fmt --check", "description": "Check code formatting" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and document the file and module organisation for a TypeScript project",
+  "use_cases": [
+    "organising project files",
+    "structuring TypeScript project",
+    "module organisation",
+    "monorepo structure",
+    "restructuring project",
+    "file structure planning"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "tsc --noEmit", "description": "Verify types compile without errors" },
+    { "command": "eslint .", "description": "Run linter to check for common issues" },
+    { "command": "vitest run", "description": "Run tests to verify functionality" }
+  ]
+}

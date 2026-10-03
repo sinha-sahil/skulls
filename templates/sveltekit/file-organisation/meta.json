@@ -1,0 +1,26 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and document the file and route organisation for a SvelteKit project",
+  "use_cases": [
+    "organising project files",
+    "structuring routes",
+    "lib folder organisation",
+    "server vs client code separation",
+    "restructuring project",
+    "file structure planning"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Run svelte-check for type errors" },
+    { "command": "pnpm lint", "description": "Run linter to check for issues" },
+    { "command": "pnpm test", "description": "Run tests to verify functionality" },
+    { "command": "pnpm build", "description": "Verify production build succeeds" }
+  ]
+}

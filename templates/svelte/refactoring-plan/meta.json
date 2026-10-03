@@ -1,0 +1,19 @@
+{
+  "name": "refactoring-plan",
+  "description": "Plan and execute Svelte component refactoring including migration to Svelte 5 runes, snippet adoption, and code modernisation",
+  "use_cases": ["refactoring components", "migrating to Svelte 5", "reducing technical debt", "improving component quality", "cleaning up code", "modernising components"],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-goals.md", "name": "Goals" },
+    { "file": "03-impact-analysis.md", "name": "Impact Analysis" },
+    { "file": "04-strategy.md", "name": "Strategy" },
+    { "file": "05-execution-plan.md", "name": "Execution Plan" },
+    { "file": "06-testing-strategy.md", "name": "Testing Strategy" },
+    { "file": "07-rollback-plan.md", "name": "Rollback Plan" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Run svelte-check for type errors" },
+    { "command": "pnpm lint", "description": "Run linter to check for issues" },
+    { "command": "pnpm test", "description": "Run tests to verify functionality" }
+  ]
+}

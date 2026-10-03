@@ -1,0 +1,38 @@
+{
+  "language": "javascript",
+  "templates": {
+    "file-organisation": {
+      "description": "Plan and document the file and module organisation for a JavaScript project",
+      "use_cases": [
+        "organising project files",
+        "module structure",
+        "ESM migration",
+        "project organisation",
+        "restructuring project",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute a structured code refactoring effort in a JavaScript project",
+      "use_cases": [
+        "refactoring code",
+        "modernising JavaScript",
+        "reducing technical debt",
+        "improving code quality",
+        "cleaning up code",
+        "code modernisation"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish and document JavaScript coding standards, conventions, and best practices for a project",
+      "use_cases": [
+        "coding standards",
+        "JavaScript conventions",
+        "style guide",
+        "best practices",
+        "team guidelines",
+        "code quality standards"
+      ]
+    }
+  }
+}

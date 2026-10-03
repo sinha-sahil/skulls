@@ -1,0 +1,38 @@
+{
+  "language": "svelte",
+  "templates": {
+    "file-organisation": {
+      "description": "Plan and restructure Svelte component file organisation, directory hierarchy, and module boundaries",
+      "use_cases": [
+        "organising component files",
+        "component library structure",
+        "structuring UI kit",
+        "module organisation",
+        "restructuring components",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute Svelte component refactoring including migration to Svelte 5 runes, snippet adoption, and code modernisation",
+      "use_cases": [
+        "refactoring components",
+        "migrating to Svelte 5",
+        "reducing technical debt",
+        "improving component quality",
+        "cleaning up code",
+        "modernising components"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish Svelte 5 coding standards, component conventions, and best practices for consistent development",
+      "use_cases": [
+        "coding standards",
+        "component conventions",
+        "style guide",
+        "best practices",
+        "team guidelines",
+        "code quality standards"
+      ]
+    }
+  }
+}
