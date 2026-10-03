@@ -1,0 +1,38 @@
+{
+  "language": "typescript",
+  "templates": {
+    "file-organisation": {
+      "description": "Plan and document the file and module organisation for a TypeScript project",
+      "use_cases": [
+        "organising project files",
+        "structuring TypeScript project",
+        "module organisation",
+        "monorepo structure",
+        "restructuring project",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute a structured refactoring effort in a TypeScript project",
+      "use_cases": [
+        "refactoring code",
+        "removing any types",
+        "improving type safety",
+        "tightening types",
+        "cleaning up code",
+        "migrating from JavaScript"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish and document TypeScript coding standards, conventions, and best practices for a project",
+      "use_cases": [
+        "coding standards",
+        "TypeScript conventions",
+        "style guide",
+        "best practices",
+        "team guidelines",
+        "code quality standards"
+      ]
+    }
+  }
+}

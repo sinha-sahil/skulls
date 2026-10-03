@@ -1,0 +1,24 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and document the stylesheet architecture and organisation for a CSS project",
+  "use_cases": [
+    "organising stylesheets",
+    "CSS architecture",
+    "style structure",
+    "stylesheet organisation",
+    "restructuring styles",
+    "file structure planning"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "stylelint .", "description": "Run stylelint to check for issues" },
+    { "command": "pnpm build", "description": "Verify build succeeds" }
+  ]
+}

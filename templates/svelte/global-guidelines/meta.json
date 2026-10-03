@@ -1,0 +1,19 @@
+{
+  "name": "global-guidelines",
+  "description": "Establish Svelte 5 coding standards, component conventions, and best practices for consistent development",
+  "use_cases": ["coding standards", "component conventions", "style guide", "best practices", "team guidelines", "code quality standards"],
+  "phases": [
+    { "file": "01-code-style.md", "name": "Code Style" },
+    { "file": "02-type-system.md", "name": "Type System" },
+    { "file": "03-error-handling.md", "name": "Error Handling" },
+    { "file": "04-testing.md", "name": "Testing" },
+    { "file": "05-performance.md", "name": "Performance" },
+    { "file": "06-security.md", "name": "Security" },
+    { "file": "07-documentation.md", "name": "Documentation" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Run svelte-check for type errors" },
+    { "command": "pnpm lint", "description": "Run linter to check for issues" },
+    { "command": "pnpm test", "description": "Run tests to verify functionality" }
+  ]
+}

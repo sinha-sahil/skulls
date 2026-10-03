@@ -1,0 +1,18 @@
+{
+  "name": "global-guidelines",
+  "description": "Establish and document HTML coding standards, conventions, and best practices for a project",
+  "use_cases": ["coding standards", "HTML conventions", "markup guide", "accessibility standards", "team guidelines", "semantic markup standards"],
+  "phases": [
+    { "file": "01-code-style.md", "name": "Code Style" },
+    { "file": "02-semantic-structure.md", "name": "Semantic Structure" },
+    { "file": "03-graceful-degradation.md", "name": "Graceful Degradation" },
+    { "file": "04-testing.md", "name": "Testing" },
+    { "file": "05-performance.md", "name": "Performance" },
+    { "file": "06-security.md", "name": "Security" },
+    { "file": "07-documentation.md", "name": "Documentation" }
+  ],
+  "verification": [
+    { "command": "htmlhint .", "description": "Run HTMLHint to check for issues" },
+    { "command": "pnpm build", "description": "Verify build succeeds" }
+  ]
+}

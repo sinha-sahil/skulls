@@ -1,0 +1,18 @@
+{
+  "name": "refactoring-plan",
+  "description": "Plan and execute a structured refactoring effort for HTML markup",
+  "use_cases": ["refactoring markup", "improving semantics", "fixing accessibility", "reducing div soup", "cleaning up HTML", "modernising markup"],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-goals.md", "name": "Goals" },
+    { "file": "03-impact-analysis.md", "name": "Impact Analysis" },
+    { "file": "04-strategy.md", "name": "Strategy" },
+    { "file": "05-execution-plan.md", "name": "Execution Plan" },
+    { "file": "06-testing-strategy.md", "name": "Testing Strategy" },
+    { "file": "07-rollback-plan.md", "name": "Rollback Plan" }
+  ],
+  "verification": [
+    { "command": "htmlhint .", "description": "Run HTMLHint to check for issues" },
+    { "command": "pnpm build", "description": "Verify build succeeds" }
+  ]
+}

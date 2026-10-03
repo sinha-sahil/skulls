@@ -1,0 +1,26 @@
+{
+  "name": "refactoring-plan",
+  "description": "Plan and execute a structured refactoring effort in a TypeScript project",
+  "use_cases": [
+    "refactoring code",
+    "removing any types",
+    "improving type safety",
+    "tightening types",
+    "cleaning up code",
+    "migrating from JavaScript"
+  ],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-goals.md", "name": "Goals" },
+    { "file": "03-impact-analysis.md", "name": "Impact Analysis" },
+    { "file": "04-strategy.md", "name": "Strategy" },
+    { "file": "05-execution-plan.md", "name": "Execution Plan" },
+    { "file": "06-testing-strategy.md", "name": "Testing Strategy" },
+    { "file": "07-rollback-plan.md", "name": "Rollback Plan" }
+  ],
+  "verification": [
+    { "command": "tsc --noEmit", "description": "Verify types compile without errors" },
+    { "command": "eslint .", "description": "Run linter to check for common issues" },
+    { "command": "vitest run", "description": "Run tests to verify functionality" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "global-guidelines",
+  "description": "Establish and document TypeScript coding standards, conventions, and best practices for a project",
+  "use_cases": [
+    "coding standards",
+    "TypeScript conventions",
+    "style guide",
+    "best practices",
+    "team guidelines",
+    "code quality standards"
+  ],
+  "phases": [
+    { "file": "01-code-style.md", "name": "Code Style" },
+    { "file": "02-type-system.md", "name": "Type System" },
+    { "file": "03-error-handling.md", "name": "Error Handling" },
+    { "file": "04-testing.md", "name": "Testing" },
+    { "file": "05-performance.md", "name": "Performance" },
+    { "file": "06-security.md", "name": "Security" },
+    { "file": "07-documentation.md", "name": "Documentation" }
+  ],
+  "verification": [
+    { "command": "tsc --noEmit", "description": "Verify types without emitting files" },
+    { "command": "eslint .", "description": "Run linter to check for issues" },
+    { "command": "vitest run", "description": "Run tests to verify functionality" }
+  ]
+}

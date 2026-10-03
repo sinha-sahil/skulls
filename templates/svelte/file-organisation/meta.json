@@ -1,0 +1,18 @@
+{
+  "name": "file-organisation",
+  "description": "Plan and restructure Svelte component file organisation, directory hierarchy, and module boundaries",
+  "use_cases": ["organising component files", "component library structure", "structuring UI kit", "module organisation", "restructuring components", "file structure planning"],
+  "phases": [
+    { "file": "01-assessment.md", "name": "Assessment" },
+    { "file": "02-directory-structure.md", "name": "Directory Structure" },
+    { "file": "03-module-boundaries.md", "name": "Module Boundaries" },
+    { "file": "04-naming-conventions.md", "name": "Naming Conventions" },
+    { "file": "05-dependency-flow.md", "name": "Dependency Flow" },
+    { "file": "06-migration-plan.md", "name": "Migration Plan" }
+  ],
+  "verification": [
+    { "command": "pnpm check", "description": "Run svelte-check for type errors" },
+    { "command": "pnpm lint", "description": "Run linter to check for issues" },
+    { "command": "pnpm test", "description": "Run tests to verify functionality" }
+  ]
+}

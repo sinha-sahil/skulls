@@ -1,0 +1,38 @@
+{
+  "language": "css",
+  "templates": {
+    "file-organisation": {
+      "description": "Plan and document the stylesheet architecture and organisation for a CSS project",
+      "use_cases": [
+        "organising stylesheets",
+        "CSS architecture",
+        "style structure",
+        "stylesheet organisation",
+        "restructuring styles",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute a structured refactoring effort for CSS stylesheets",
+      "use_cases": [
+        "refactoring styles",
+        "reducing CSS complexity",
+        "improving specificity",
+        "migrating to custom properties",
+        "cleaning up CSS",
+        "modernising styles"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish and document CSS coding standards, conventions, and best practices for a project",
+      "use_cases": [
+        "coding standards",
+        "CSS conventions",
+        "style guide",
+        "best practices",
+        "team guidelines",
+        "design system standards"
+      ]
+    }
+  }
+}

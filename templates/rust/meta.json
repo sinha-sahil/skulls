@@ -21,6 +21,39 @@
         "new service module",
         "database operations"
       ]
+    },
+    "file-organisation": {
+      "description": "Plan and document the file and module organisation for a Rust project or workspace",
+      "use_cases": [
+        "organising project files",
+        "structuring a new crate",
+        "workspace layout",
+        "module organisation",
+        "restructuring project",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute a structured code refactoring effort in a Rust project",
+      "use_cases": [
+        "refactoring code",
+        "reducing technical debt",
+        "improving code quality",
+        "restructuring modules",
+        "cleaning up code",
+        "code modernisation"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish and document Rust coding standards, conventions, and best practices for a project",
+      "use_cases": [
+        "coding standards",
+        "project conventions",
+        "style guide",
+        "best practices",
+        "team guidelines",
+        "code quality standards"
+      ]
     }
   }
 }

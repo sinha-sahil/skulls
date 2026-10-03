@@ -1,0 +1,38 @@
+{
+  "language": "html",
+  "templates": {
+    "file-organisation": {
+      "description": "Plan and document the file and template organisation for an HTML project",
+      "use_cases": [
+        "organising HTML files",
+        "template structure",
+        "site organisation",
+        "document structure",
+        "restructuring markup",
+        "file structure planning"
+      ]
+    },
+    "refactoring-plan": {
+      "description": "Plan and execute a structured refactoring effort for HTML markup",
+      "use_cases": [
+        "refactoring markup",
+        "improving semantics",
+        "fixing accessibility",
+        "reducing div soup",
+        "cleaning up HTML",
+        "modernising markup"
+      ]
+    },
+    "global-guidelines": {
+      "description": "Establish and document HTML coding standards, conventions, and best practices for a project",
+      "use_cases": [
+        "coding standards",
+        "HTML conventions",
+        "markup guide",
+        "accessibility standards",
+        "team guidelines",
+        "semantic markup standards"
+      ]
+    }
+  }
+}
