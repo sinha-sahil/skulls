@@ -1,0 +1,74 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    environment: publish-env
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # OIDC trusted publishing needs npm >= 11.5.1; Node 22 bundles npm 10.
+      - name: Update npm for trusted publishing
+        run: |
+          npm install -g npm@11
+          npm --version
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: mcp
+
+      - name: Typecheck
+        run: pnpm typecheck
+        working-directory: mcp
+
+      - name: Lint
+        run: pnpm lint
+        working-directory: mcp
+
+      - name: Bump patch version
+        id: bump
+        working-directory: mcp
+        run: |
+          CURRENT=$(node -p "require('./package.json').version")
+          NEW=$(npm version patch --no-git-tag-version)
+          echo "version=$NEW" >> "$GITHUB_OUTPUT"
+          echo "Bumped $CURRENT -> $NEW"
+
+      - name: Build
+        run: pnpm build
+        working-directory: mcp
+
+      - name: Publish to npm
+        run: npm publish --access public
+        working-directory: mcp
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add mcp/package.json
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version }}"
+          git push
