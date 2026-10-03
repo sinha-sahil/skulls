@@ -327,7 +327,9 @@ CRITICAL - PLAN OUTPUT STRUCTURE:
                       correct_example: {
                         description:
                           'Planning "user-auth" in ./plans - CREATE DIRECTORY then files inside:',
-                        paths: allPlanFiles.map((f) => `./plans/user-auth/${f}`),
+                        paths: allPlanFiles.map(
+                          (f) => `./plans/user-auth/${f}`
+                        ),
                       },
                       wrong_example: {
                         description:
