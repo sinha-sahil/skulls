@@ -22,8 +22,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,7 +50,10 @@ jobs:
         id: bump
         working-directory: mcp
         run: |
-          CURRENT=$(node -p "require('./package.json').version")
+          # bump from npm's latest so a repo version behind the registry can't collide
+          NAME=$(node -p "require('./package.json').name")
+          CURRENT=$(npm view "$NAME" version 2>/dev/null || node -p "require('./package.json').version")
+          npm version "$CURRENT" --no-git-tag-version --allow-same-version >/dev/null
           NEW=$(npm version patch --no-git-tag-version)
           echo "version=$NEW" >> "$GITHUB_OUTPUT"
           echo "Bumped $CURRENT -> $NEW"
