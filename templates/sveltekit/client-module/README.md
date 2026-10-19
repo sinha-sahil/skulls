@@ -19,13 +19,15 @@ All client-side modules are located in: `src/lib/client/modules/`
 
 ```typescript
 // CORRECT
-type ModuleStore = {
-  data: DataType | null;
+type ModuleEntityType = {
+  id: string;
+  status: ModuleStatusType;
 };
 
 // WRONG - never use interface
-interface ModuleStore {
-  data: DataType | null;
+interface ModuleEntityType {
+  id: string;
+  status: ModuleStatusType;
 }
 ```
 
@@ -69,6 +71,27 @@ If typesafe-api-call is not available:
 - Check for logger (`grep -r "appLogger\|logger" src/`)
 - Use them if available, otherwise use native fetch/console
 
+### 5. Runes Store in `store.svelte.ts`
+
+State lives in module-level `$state` and `$state.raw` variables, read through one read-only getter object and
+changed only by named functions. Computed values use `$derived`, never `$effect`.
+
+```typescript
+let items = $state.raw<ModuleEntityType[]>([]);
+
+export const moduleStore = {
+  get items(): ModuleEntityType[] {
+    return items;
+  }
+};
+
+export function setItems(next: ModuleEntityType[]): void {
+  items = next;
+}
+```
+
+Components read `moduleStore.items` directly, never `$moduleStore`.
+
 ## Architecture Principles
 
 1. **Independence:** Each module must function independently without external dependencies beyond the core framework
@@ -82,7 +105,7 @@ If typesafe-api-call is not available:
 src/lib/client/modules/[module-name]/
 ├── index.ts           # Main export file (minimal, essential exports only)
 ├── remote.ts          # API calls (typesafe-api-call recommended)
-├── store.ts           # Svelte stores for state management
+├── store.svelte.ts    # Runes state: getter object + mutators
 ├── types.ts           # Local type definitions + manual decoders if needed
 ├── utils.ts           # Internal utility functions (module-private)
 └── ui/                # Svelte components directory
@@ -95,7 +118,7 @@ src/lib/client/modules/[module-name]/
 1. **Planning** - Define problem domain, detect utilities (type-crafter, typesafe-api-call, logger)
 2. **Setup** - Create directory structure and initial files
 3. **Type Definitions** - Define types (via type-crafter or manually) + decoders
-4. **State Management** - Implement stores in store.ts
+4. **State Management** - Implement runes state in store.svelte.ts
 5. **API Integration** - Create remote operations (typesafe-api-call recommended)
 6. **Utilities** - Add helper functions in utils.ts
 7. **UI Components** - Build Svelte components in ui/

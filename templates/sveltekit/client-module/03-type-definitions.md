@@ -15,15 +15,15 @@ Define module-specific types, prioritizing type-crafter generation where availab
 
 ```typescript
 // CORRECT - Always use type
-type ModuleStore = {
-  data: DataType | null;
-  isLoaded: boolean;
+type ModuleEntityType = {
+  id: string;
+  status: ModuleStatusType;
 };
 
 // WRONG - Never use interface
-interface ModuleStore {
-  data: DataType | null;
-  isLoaded: boolean;
+interface ModuleEntityType {
+  id: string;
+  status: ModuleStatusType;
 }
 ```
 
@@ -222,17 +222,8 @@ export type ModuleMetadata = {
 };
 
 // =============================================================================
-// Store Types
+// Filter Types
 // =============================================================================
-
-/**
- * Shape of the module's store data
- */
-export type ModuleStoreData = {
-  items: ModuleEntityType[];
-  selectedItem: ModuleEntityType | null;
-  filters: ModuleFilters;
-};
 
 /**
  * Filter options for the module
@@ -307,7 +298,6 @@ export type UpdateModuleEntityRequest = {
 | Category | Type-Crafter | Manual | Reason |
 |----------|--------------|--------|--------|
 | Entity types | Yes | Fallback | Pure data structures |
-| Store data types | Yes | Fallback | Pure data structures |
 | Union/enum types | Yes | Fallback | Simple values |
 | Filter types | Yes | Fallback | Pure data structures |
 | Props with callbacks | No | Always | Contains functions |
@@ -319,7 +309,6 @@ export type UpdateModuleEntityRequest = {
 | Type Category | Naming Pattern | Example |
 |--------------|----------------|---------|
 | Entity | `Module` + `Entity` + `Type` | `OrderEntityType` |
-| Store | `Module` + `Store` + `Data` | `OrderStoreData` |
 | Props | `Component` + `Props` | `OrderListProps` |
 | Events | `Module` + `EventMap` | `OrderEventMap` |
 | Status | `Module` + `Status` + `Type` | `OrderStatusType` |
@@ -334,6 +323,5 @@ Before moving to the next phase:
 - [ ] Function-containing types created manually
 - [ ] All types use `type`, not `interface`
 - [ ] Type names are descriptive and module-prefixed
-- [ ] Store shape type is defined
 - [ ] Component prop types are defined
 - [ ] Event types are defined
