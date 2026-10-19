@@ -13,7 +13,7 @@ Build self-contained Svelte components for the module's functionality.
 
 1. **Self-Contained:** Components include all necessary logic
 2. **Props-Driven:** All customization through props
-3. **Store Integration:** Subscribe to module store internally
+3. **Store Integration:** Read the module store's getters internally
 4. **Event Emission:** Use createEventDispatcher for communication
 5. **No External Burden:** Importers shouldn't need complex setup
 
@@ -48,7 +48,7 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 ```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import moduleStore from '../store';
+  import { moduleStore } from '../store.svelte';
   import { fetchItems } from '../remote';
   import ModuleList from './ModuleList.svelte';
   import ModuleLoader from './ModuleLoader.svelte';
@@ -59,13 +59,9 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
   export let autoLoad = true;
   export let emptyMessage = 'No items found';
 
-  // Store subscription
-  $: ({ data, isLoaded, showLoader, error } = $moduleStore);
-  $: items = data.items;
-
   // Lifecycle
   onMount(() => {
-    if (autoLoad && !isLoaded) {
+    if (autoLoad && !moduleStore.isLoaded) {
       fetchItems();
     }
   });
@@ -77,17 +73,17 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 </script>
 
 <div class="module-container">
-  {#if showLoader}
+  {#if moduleStore.showLoader}
     <ModuleLoader />
-  {:else if error}
+  {:else if moduleStore.error !== null}
     <div class="error-state">
-      <p>{error}</p>
+      <p>{moduleStore.error}</p>
       <button on:click={() => fetchItems()}>Retry</button>
     </div>
-  {:else if items.length === 0}
+  {:else if moduleStore.itemCount === 0}
     <ModuleEmpty message={emptyMessage} />
   {:else}
-    <ModuleList {items} on:select={handleItemSelect} />
+    <ModuleList items={moduleStore.items} on:select={handleItemSelect} />
   {/if}
 </div>
 
@@ -474,14 +470,23 @@ const dispatch = createEventDispatcher<{
 dispatch('eventName', payload);
 ```
 
-### Store Subscription
+### Reading the Store
 
-```typescript
-import moduleStore from '../store';
+```svelte
+<script lang="ts">
+  import { moduleStore } from '../store.svelte';
+  import ModuleLoader from './ModuleLoader.svelte';
+</script>
 
-// Reactive subscription
-$: ({ data, showLoader } = $moduleStore);
+{#if moduleStore.showLoader}
+  <ModuleLoader />
+{:else}
+  <p>{moduleStore.itemCount} items</p>
+{/if}
 ```
+
+Read getters in markup, where they stay reactive. A copy made in the script, such as `const { items } = moduleStore`
+or `$: items = moduleStore.items`, never updates. `$moduleStore` throws: the getter object is not a Svelte store.
 
 ### Conditional Rendering
 
@@ -502,7 +507,7 @@ Before moving to the next phase:
 - [ ] All planned components are created
 - [ ] Components are exported from ui/index.ts
 - [ ] Components use props for customization
-- [ ] Store subscription is handled internally
+- [ ] Components read store getters directly, without subscriptions or copies
 - [ ] Events are dispatched for parent communication
 - [ ] Loading and error states are handled
 - [ ] Components are accessible (keyboard, ARIA)

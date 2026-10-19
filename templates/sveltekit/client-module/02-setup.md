@@ -29,7 +29,7 @@ Create the following structure:
 src/lib/client/modules/[module-name]/
 ├── index.ts           # Main export file
 ├── remote.ts          # API calls
-├── store.ts           # State management
+├── store.svelte.ts    # Runes state: getter object + mutators
 ├── types.ts           # Type definitions
 ├── utils.ts           # Internal utilities
 └── ui/                # Components directory
@@ -47,8 +47,8 @@ src/lib/client/modules/[module-name]/
 // Type exports
 export * from './types';
 
-// Store exports (specific functions, not raw store)
-// export { updateFunction, anotherFunction } from './store';
+// Store exports (the getter object and the functions other code calls)
+// export { moduleStore, resetStore } from './store.svelte';
 
 // UI component exports
 export * from './ui';
@@ -67,7 +67,7 @@ Choose the appropriate scaffold based on Phase 1 detection results:
 // Use this if project has typesafe-api-call (recommended approach)
 import { APICaller, APISuccess, type APIRequest } from 'typesafe-api-call';
 import { decodeEntityType, type EntityType } from '$generated/types';  // If type-crafter available
-import { setItems, setLoadingState, setError, clearError } from './store';
+import { setItems, setLoadingState, setError, clearError } from './store.svelte';
 
 // Helper for constructing URLs safely
 function constructUrl(path: string): URL | null {
@@ -86,7 +86,7 @@ function constructUrl(path: string): URL | null {
 ```typescript
 // Use this if project has typesafe-api-call but no type-crafter
 import { APICaller, APISuccess, type APIRequest } from 'typesafe-api-call';
-import { setItems, setLoadingState, setError, clearError } from './store';
+import { setItems, setLoadingState, setError, clearError } from './store.svelte';
 import type { EntityType } from './types';
 
 // Manual decoder function (write for each response type)
@@ -106,7 +106,7 @@ function decodeEntityType(data: unknown): EntityType | null {
 // Use this if project has custom network utility but not typesafe-api-call
 import { NetworkController } from '$services/network/network-controller';  // Adjust path
 import appLogger from '$services/app-logger';  // If logger available
-import { setLoadingState, setError, clearError } from './store';
+import { setLoadingState, setError, clearError } from './store.svelte';
 
 // API operations will be implemented here
 ```
@@ -115,42 +115,39 @@ import { setLoadingState, setError, clearError } from './store';
 
 ```typescript
 // Use this if project does not have any network utilities
-import { setLoadingState, setError, clearError } from './store';
+import { setLoadingState, setError, clearError } from './store.svelte';
 
 const BASE_URL = '/api';
 
 // API operations will be implemented here using fetch
 ```
 
-### store.ts
+### store.svelte.ts
 
 ```typescript
-import { writable, type Writable } from 'svelte/store';
-// import type { StoreType } from './types';
+import type { ModuleEntityType } from './types';
 
-// Store type - always use type, never interface
-type ModuleStore = {
-  data: unknown | null;
-  isLoaded: boolean;
-  showLoader: boolean;
-  error: string | null;
+let items = $state.raw<ModuleEntityType[]>([]);
+let isLoaded = $state(false);
+let showLoader = $state(false);
+let error = $state<string | null>(null);
+
+export const moduleStore = {
+  get items(): ModuleEntityType[] {
+    return items;
+  },
+  get isLoaded(): boolean {
+    return isLoaded;
+  },
+  get showLoader(): boolean {
+    return showLoader;
+  },
+  get error(): string | null {
+    return error;
+  }
 };
 
-// Initial state
-const initialState: ModuleStore = {
-  data: null,
-  isLoaded: false,
-  showLoader: false,
-  error: null
-};
-
-// Create store
-const moduleStore: Writable<ModuleStore> = writable(initialState);
-
-// Export store for external access
-export default moduleStore;
-
-// Update functions will be added here
+// Functions that change state will be added here
 ```
 
 ### types.ts
@@ -224,7 +221,7 @@ mkdir -p src/lib/client/modules/[module-name]/ui
 # Create files
 touch src/lib/client/modules/[module-name]/index.ts
 touch src/lib/client/modules/[module-name]/remote.ts
-touch src/lib/client/modules/[module-name]/store.ts
+touch src/lib/client/modules/[module-name]/store.svelte.ts
 touch src/lib/client/modules/[module-name]/types.ts
 touch src/lib/client/modules/[module-name]/utils.ts
 touch src/lib/client/modules/[module-name]/ui/index.ts
@@ -240,6 +237,6 @@ Before moving to the next phase:
 - [ ] remote.ts uses correct imports based on detection results
 - [ ] types.ts uses correct approach based on type-crafter availability
 - [ ] Decoder functions planned if using typesafe-api-call
-- [ ] store.ts has initial store scaffold with `type` (not `interface`)
+- [ ] store.svelte.ts declares module-level runes and the getter object
 - [ ] ui/index.ts exists for component exports
 - [ ] Files follow the naming convention

@@ -350,19 +350,23 @@ Compare entities and find differences.
 Utils are called from:
 
 - `remote.ts` - For data transformation before/after API calls
-- `store.ts` - For derived calculations
+- `store.svelte.ts` - Inside `$derived` for computed values
 - `*.svelte` - For display formatting
 
 ```typescript
 // In remote.ts
 import { transformApiData, prepareForApi } from './utils';
 
-// In store.ts
+// In store.svelte.ts
 import { applyFilters } from './utils';
+
+const visibleItems = $derived(applyFilters(items, filters));
 
 // In Component.svelte
 import { formatDate, formatStatus } from '../utils';
 ```
+
+Helpers called inside `$derived` must be pure: they return new values and never write state.
 
 ## Verification
 
@@ -374,5 +378,6 @@ Before moving to the next phase:
 - [ ] Sorting utilities handle all sort options
 - [ ] Calculation utilities provide needed stats
 - [ ] Formatting utilities prepare data for display
+- [ ] Helpers used in `$derived` are pure
 - [ ] No utilities are exported from index.ts
 - [ ] All utilities have proper TypeScript types

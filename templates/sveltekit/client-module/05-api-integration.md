@@ -30,7 +30,7 @@ Use this when the project has `typesafe-api-call` installed. This is the recomme
 ```typescript
 import { APICaller, APISuccess, type APIRequest } from 'typesafe-api-call';
 import { decodeModuleEntity, decodeModuleEntityList, type ModuleEntityType } from '$generated/types';
-import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store';
+import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store.svelte';
 import type { CreateModuleEntityRequest } from './types';
 
 // Helper for constructing URLs safely
@@ -201,7 +201,7 @@ export async function deleteItem(id: string): Promise<boolean> {
 
 ```typescript
 import { APICaller, APISuccess, type APIRequest } from 'typesafe-api-call';
-import { setItems, addItem, setLoadingState, setError, clearError } from './store';
+import { setItems, addItem, setLoadingState, setError, clearError } from './store.svelte';
 import type { ModuleEntityType } from './types';
 
 // Manual decoder - validate and parse API response
@@ -279,7 +279,7 @@ Use this when project has NetworkController/ApiClient but not typesafe-api-call:
 ```typescript
 import { NetworkController } from '$services/network/network-controller';
 import appLogger from '$services/app-logger';  // If available
-import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store';
+import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store.svelte';
 import type { ModuleEntityType, CreateModuleEntityRequest } from './types';
 
 export async function fetchItems(): Promise<void> {
@@ -335,7 +335,7 @@ export async function createItem(request: CreateModuleEntityRequest): Promise<Mo
 Use this when no API utilities are available:
 
 ```typescript
-import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store';
+import { setItems, addItem, updateItem, removeItem, setLoadingState, setError, clearError } from './store.svelte';
 import type { ModuleEntityType, CreateModuleEntityRequest } from './types';
 
 const BASE_URL = '/api';

@@ -117,7 +117,7 @@ Map out the data lifecycle:
        ↓
    remote.ts (fetch/mutate)
        ↓
-   store.ts (state management)
+   store.svelte.ts (runes state)
        ↓
    ui/*.svelte (display/interact)
        ↓
@@ -133,26 +133,19 @@ For each data entity, define:
 
 ### 5. State Requirements
 
-Plan the store structure:
+Plan each value the store holds and the rune behind it:
 
-```typescript
-// Always use type, never interface
-type PlannedStore = {
-  // Primary data
-  data: DataType | null;
+| Value | Rune | Reason |
+|-------|------|--------|
+| `items` | `$state.raw` | Replaced whole by each API response |
+| `filters` | `$state.raw` | Replaced whole on each change |
+| `selectedId` | `$state` | Primitive set from the UI |
+| `isLoaded`, `showLoader` | `$state` | Loading flags |
+| `error` | `$state` | Error message or `null` |
+| `visibleItems` | `$derived` | Computed from `items` and `filters` |
+| `itemCount` | `$derived` | Computed from `items` |
 
-  // Loading states
-  isLoaded: boolean;
-  showLoader: boolean;
-
-  // Error handling
-  error: string | null;
-
-  // Additional state as needed
-  // filters?: FilterType;
-  // selectedItem?: ItemType;
-};
-```
+Components read every value through the store's getter object; only the store's functions change them.
 
 ### 6. Type Planning
 
@@ -162,7 +155,6 @@ Determine which types need to be created:
 |------|---------------|---------|--------|
 | Entity types | Yes (if available) | Fallback | Pure data |
 | Decoder functions | Yes (if available) | Fallback | For typesafe-api-call |
-| Store types | Yes (if available) | Fallback | Pure data |
 | Props with callbacks | No | Always | Contains functions |
 | Event map types | No | Always | Used with dispatcher |
 
@@ -225,7 +217,7 @@ Before moving to the next phase:
 - [ ] Scope boundaries are established
 - [ ] Project utilities detected (type-crafter, typesafe-api-call, logger)
 - [ ] Data flow is mapped
-- [ ] Store structure is planned
+- [ ] Store values and their runes are planned
 - [ ] Type generation approach decided
 - [ ] Decoder functions planned (for typesafe-api-call)
 - [ ] Component APIs are designed

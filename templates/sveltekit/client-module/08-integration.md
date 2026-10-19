@@ -24,7 +24,6 @@ Finalize the module's public interface and verify independence.
 export type {
   ModuleEntityType,
   ModuleStatusType,
-  ModuleStoreData,
   ModuleFilters,
   ModuleEventMap,
   CreateModuleEntityRequest,
@@ -33,16 +32,9 @@ export type {
 
 // -----------------------------------------------------------------------------
 // Store Exports
-// Export the store and specific update functions (not all internal functions)
+// Export the getter object (derived values included) and the functions other code calls
 // -----------------------------------------------------------------------------
-export { default as moduleStore } from './store';
-export {
-  // Read operations
-  filteredItems,
-  itemCount,
-  // State management (if needed externally)
-  resetStore
-} from './store';
+export { moduleStore, resetStore } from './store.svelte';
 
 // -----------------------------------------------------------------------------
 // Remote Exports
@@ -75,9 +67,9 @@ export {
 
 | Category | Export | Reason |
 |----------|--------|--------|
-| Types | Entity types, store types | Type safety for consumers |
-| Store | Store itself | For subscriptions |
-| Store | Derived stores | For computed values |
+| Types | Entity types | Type safety for consumers |
+| Store | Getter object (`moduleStore`) | Read-only state and derived values |
+| Store | Functions other code calls | Such as `resetStore` |
 | Remote | Fetch functions | For manual refresh |
 | Remote | CRUD functions | If called from outside |
 | UI | All components | Primary module output |
@@ -104,38 +96,36 @@ import { ModuleContainer } from '$client/modules/module-name';
 
 ### With Store Access
 
+Outside markup, a getter returns the value at the moment it is read:
+
 ```typescript
-import { moduleStore, type ModuleEntityType } from '$client/modules/module-name';
-import { get } from 'svelte/store';
+import { moduleStore, resetStore } from '$client/modules/module-name';
 
-// Get current value
-const currentData = get(moduleStore);
-
-// Subscribe to changes
-const unsubscribe = moduleStore.subscribe(state => {
-  console.log('Data changed:', state.data);
-});
-
-// Clean up
-unsubscribe();
+export function clearAfterError(): void {
+  if (moduleStore.error !== null) {
+    resetStore();
+  }
+}
 ```
 
-### Reactive Subscription in Svelte
+The store has no `subscribe`. To act on a change, act where it happens: in the event handler or remote function
+that makes it.
+
+### Reading State in Svelte
 
 ```svelte
 <script lang="ts">
   import { moduleStore } from '$client/modules/module-name';
-
-  $: ({ data, showLoader, error } = $moduleStore);
-  $: items = data.items;
 </script>
 
-{#if showLoader}
+{#if moduleStore.showLoader}
   <p>Loading...</p>
 {:else}
-  <p>Found {items.length} items</p>
+  <p>Found {moduleStore.itemCount} items</p>
 {/if}
 ```
+
+Read getters in markup or `$derived`, where they stay reactive. A destructured copy never updates.
 
 ### Manual Data Fetching
 
@@ -232,7 +222,7 @@ Brief description of what this module does.
 
 ## Store
 
-Subscribe to `moduleStore` for reactive data access.
+Read `moduleStore` getters, such as `moduleStore.items`, for reactive data access.
 
 ## API
 

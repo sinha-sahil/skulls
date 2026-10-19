@@ -7,19 +7,20 @@
 3. **Check for typesafe-api-call** for API calls (recommended)
 4. **Only create types manually** if they contain functions or type-crafter unavailable
 5. **Detect project utilities** (network, logger) as fallback if typesafe-api-call unavailable
+6. **Keep state in `store.svelte.ts`** - runes, a read-only getter object and named mutators; `$derived`, never `$effect`
 
 ## Module Structure
 
 ```text
 src/lib/client/modules/[module-name]/
-├── index.ts      # Minimal exports only
-├── remote.ts     # API calls (typesafe-api-call recommended)
-├── store.ts      # Svelte stores + update functions
-├── types.ts      # Types + decoders (if manual)
-├── utils.ts      # Internal helpers (not exported)
+├── index.ts         # Minimal exports only
+├── remote.ts        # API calls (typesafe-api-call recommended)
+├── store.svelte.ts  # Runes state: getter object + mutators
+├── types.ts         # Types + decoders (if manual)
+├── utils.ts         # Internal helpers (not exported)
 └── ui/
-    ├── index.ts  # Component exports
-    └── *.svelte  # Components
+    ├── index.ts     # Component exports
+    └── *.svelte     # Components
 ```
 
 ## Utility Detection
@@ -41,8 +42,8 @@ grep -r "appLogger\|logger\|Logger" src/
 ## Key Imports
 
 ```typescript
-// Svelte stores (always needed)
-import { writable, type Writable } from 'svelte/store';
+// Module store (runes need no import, only the .svelte.ts file name)
+import { moduleStore, setItems } from './store.svelte';
 
 // typesafe-api-call (recommended for API calls)
 import { APICaller, APISuccess, type APIRequest } from 'typesafe-api-call';
@@ -54,27 +55,54 @@ import { decodeEntityType, type EntityType } from '$generated/types';
 ## Store Pattern
 
 ```typescript
-// Always use type, never interface
-type ModuleStore = {
-  data: DataType | null;
-  isLoaded: boolean;
-  showLoader: boolean;
-  error: string | null;
+// store.svelte.ts
+import type { EntityType } from './types';
+
+let items = $state.raw<EntityType[]>([]);
+let isLoaded = $state(false);
+let showLoader = $state(false);
+let error = $state<string | null>(null);
+
+const itemCount = $derived(items.length);
+
+export const moduleStore = {
+  get items(): EntityType[] {
+    return items;
+  },
+  get itemCount(): number {
+    return itemCount;
+  },
+  get isLoaded(): boolean {
+    return isLoaded;
+  },
+  get showLoader(): boolean {
+    return showLoader;
+  },
+  get error(): string | null {
+    return error;
+  }
 };
 
-const store: Writable<ModuleStore> = writable({
-  data: null,
-  isLoaded: false,
-  showLoader: false,
-  error: null
-});
+export function setItems(next: EntityType[]): void {
+  items = next;
+  isLoaded = true;
+  error = null;
+}
 
-export default store;
+export function setLoadingState(isLoading: boolean): void {
+  showLoader = isLoading;
+}
 
-export function updateData(data: DataType): void {
-  store.update(s => ({ ...s, data, isLoaded: true, error: null }));
+export function setError(message: string): void {
+  error = message;
+  showLoader = false;
 }
 ```
+
+- `$state.raw` for values replaced whole, `$state` for primitives
+- Functions assign new values; never `push` or write properties
+- `$derived` for computed values, never `$effect`
+- Components read `moduleStore.items` directly, never `$moduleStore`
 
 ## Remote Pattern (typesafe-api-call - Recommended)
 
@@ -123,7 +151,7 @@ export async function fetchData(): Promise<void> {
     const response = await fetch('/api/resource');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    updateData(data);
+    setItems(data);
   } catch (error) {
     console.error('[fetchData]', error);
     setError(error instanceof Error ? error.message : 'Failed');
@@ -151,7 +179,7 @@ function decodeEntity(data: unknown): EntityType | null {
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { ItemType } from '../types';
-  import store from '../store';
+  import { moduleStore } from '../store.svelte';
 
   export let item: ItemType;
   export let variant: 'default' | 'compact' = 'default';
@@ -167,7 +195,7 @@ function decodeEntity(data: unknown): EntityType | null {
 
 ```typescript
 export * from './types';
-export { functionName } from './store';
+export { moduleStore, functionName } from './store.svelte';
 export * from './ui';
 export { specificRemoteFunction } from './remote';
 ```
@@ -178,7 +206,7 @@ export { specificRemoteFunction } from './remote';
 grep -q "type-crafter" package.json && echo "Use type-crafter"
 ```
 
-**Can be generated:** Entity types, store data, filters, unions, decoder functions
+**Can be generated:** Entity types, filters, unions, decoder functions
 **Must be manual:** Types with functions (callbacks, event maps)
 
 ## API Priority
@@ -196,6 +224,7 @@ grep -q "type-crafter" package.json && echo "Use type-crafter"
 - [ ] Module functions independently
 - [ ] Single responsibility scope
 - [ ] Minimal exports in index.ts
+- [ ] State in `store.svelte.ts`: getter object, named mutators, `$derived`, no `$effect`
 - [ ] Loading/error states implemented
 - [ ] Components are self-contained
 - [ ] No utils.ts functions exported externally
