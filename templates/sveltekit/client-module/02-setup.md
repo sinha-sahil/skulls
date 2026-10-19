@@ -169,8 +169,8 @@ export { decodeModuleEntityType, decodeModuleEntityList } from '$generated/types
 // Re-export types for module consumers
 export type { ModuleEntityType, ModuleStatusType };
 
-// Only define types that contain functions (cannot be generated)
-// export type ModuleEventMap = { ... };
+// Write component props and types holding functions or snippets by hand
+// export type ModuleListProps = { ... };
 ```
 
 #### Option B: Without type-crafter (define types and decoders manually)

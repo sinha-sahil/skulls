@@ -40,8 +40,9 @@ Before creating types manually:
 - Decoder functions are auto-generated with type-crafter
 - Only create types manually if type-crafter is unavailable
 
-**Exception:** Types containing functions (callbacks, event maps) must always be created
-manually since type-crafter cannot generate them.
+**Exception:** Types holding functions or snippets must always be created manually since type-crafter cannot
+generate them. Component props types are hand-written too, composed from generated types, because type-crafter
+can't express optional keys.
 
 ### 3. typesafe-api-call for API Calls (Recommended)
 
@@ -91,6 +92,13 @@ export function setItems(next: ModuleEntityType[]): void {
 ```
 
 Components read `moduleStore.items` directly, never `$moduleStore`.
+
+### 6. Svelte 5 Components
+
+Components take props from `$props()` with a named props type, report events through callback props such as
+`onselect`, take replaceable content as snippets and handle DOM events with attributes such as `onclick`. No
+`export let`, `$:`, `createEventDispatcher`, `on:` directives, `<slot>`, `$effect` or `tick()`. The examples use
+class arrays (`class={[...]}`), which need Svelte 5.16 or later.
 
 ## Architecture Principles
 

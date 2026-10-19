@@ -202,11 +202,13 @@ Create group layouts if needed:
 ```svelte
 <!-- src/routes/(auth)/+layout.svelte -->
 <script lang="ts">
-  // Minimal auth layout
+  import type { LayoutProps } from './$types';
+
+  let { children }: LayoutProps = $props();
 </script>
 
 <div class="auth-layout">
-  <slot />
+  {@render children()}
 </div>
 ```
 

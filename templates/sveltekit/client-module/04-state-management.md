@@ -32,9 +32,11 @@ The store imports `applyFilters` from `utils.ts`, which Phase 6 adds.
 import type { ModuleEntityType, ModuleFilters } from './types';
 import { applyFilters } from './utils';
 
+const NO_FILTERS: ModuleFilters = { status: null, search: null, sortBy: null, sortOrder: null };
+
 let items = $state.raw<ModuleEntityType[]>([]);
 let selectedId = $state<string | null>(null);
-let filters = $state.raw<ModuleFilters>({});
+let filters = $state.raw<ModuleFilters>(NO_FILTERS);
 let isLoaded = $state(false);
 let showLoader = $state(false);
 let error = $state<string | null>(null);
@@ -110,13 +112,13 @@ export function setFilters(changes: Partial<ModuleFilters>): void {
 }
 
 export function clearFilters(): void {
-  filters = {};
+  filters = NO_FILTERS;
 }
 
 export function resetStore(): void {
   items = [];
   selectedId = null;
-  filters = {};
+  filters = NO_FILTERS;
   isLoaded = false;
   showLoader = false;
   error = null;
@@ -205,7 +207,7 @@ Read a getter where the value is used, in markup or in `$derived`, and it stays 
 <p>{moduleStore.itemCount} items</p>
 ```
 
-A copy never updates: `const { items } = moduleStore` and `$: items = moduleStore.items` read once. `$moduleStore`
+A copy never updates: `const { items } = moduleStore` and `let items = moduleStore.items` read once. `$moduleStore`
 throws, because the getter object is not a Svelte store.
 
 ## Export Strategy
