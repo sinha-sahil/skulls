@@ -5,9 +5,12 @@
 1. **Always use `type`, never `interface`**
 2. **Check for type-crafter** before creating types manually
 3. **Check for typesafe-api-call** for API calls (recommended)
-4. **Only create types manually** if they contain functions or type-crafter unavailable
+4. **Create types manually** only for component props and types holding functions or snippets, or without
+   type-crafter
 5. **Detect project utilities** (network, logger) as fallback if typesafe-api-call unavailable
 6. **Keep state in `store.svelte.ts`** - runes, a read-only getter object and named mutators; `$derived`, never `$effect`
+7. **Write Svelte 5 components** - `$props()` with a named props type, callback props such as `onselect`,
+   snippets and `onclick`
 
 ## Module Structure
 
@@ -175,21 +178,38 @@ function decodeEntity(data: unknown): EntityType | null {
 
 ## Component Pattern
 
-```svelte
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { ItemType } from '../types';
-  import { moduleStore } from '../store.svelte';
+```typescript
+// types.ts - one named props type per component
+import type { Snippet } from 'svelte';
 
-  export let item: ItemType;
-  export let variant: 'default' | 'compact' = 'default';
-
-  const dispatch = createEventDispatcher<{
-    select: ItemType;
-    action: { type: string; data: unknown };
-  }>();
-</script>
+export type EntityRowProps = {
+  entity: EntityType;
+  selected?: boolean;
+  onselect: (entity: EntityType) => void;
+  children?: Snippet;
+};
 ```
+
+```svelte
+<!-- ui/EntityRow.svelte -->
+<script lang="ts">
+  import type { EntityRowProps } from '../types';
+
+  let { entity, selected = false, onselect, children }: EntityRowProps = $props();
+</script>
+
+<div class={['entity-row', { selected }]}>
+  <button aria-current={selected} onclick={() => onselect(entity)}>{entity.id}</button>
+  {@render children?.()}
+</div>
+```
+
+- Props: a named type destructured from `$props()`, never `export let`
+- Events: callback props such as `onselect`, never `createEventDispatcher`
+- DOM events: `onclick`, never `on:click`
+- Content: snippets rendered with `{@render}`, never `<slot>`
+- No `$:` or `$effect`: derive with `$derived`, load in `onMount`, react in event handlers
+- No `tick()`: work on an element in an action (`use:`) on that element
 
 ## index.ts Exports
 
@@ -207,7 +227,8 @@ grep -q "type-crafter" package.json && echo "Use type-crafter"
 ```
 
 **Can be generated:** Entity types, filters, unions, decoder functions
-**Must be manual:** Types with functions (callbacks, event maps)
+**Must be manual:** Component props, composed from generated types (type-crafter has no optional keys), and types
+holding functions or snippets
 
 ## API Priority
 

@@ -155,17 +155,16 @@ Determine which types need to be created:
 |------|---------------|---------|--------|
 | Entity types | Yes (if available) | Fallback | Pure data |
 | Decoder functions | Yes (if available) | Fallback | For typesafe-api-call |
-| Props with callbacks | No | Always | Contains functions |
-| Event map types | No | Always | Used with dispatcher |
+| Component props | No | Always | Composed from generated types; no optional keys in type-crafter |
 
 ### 7. Component API Design
 
 For each planned component:
 
-| Component | Purpose | Props | Events |
-|-----------|---------|-------|--------|
-| MainComponent | Primary display | data, variant | select, action |
-| ListItem | Individual item | item | click |
+| Component | Purpose | Props | Callback props |
+|-----------|---------|-------|----------------|
+| MainComponent | Primary display | data, variant | onselect, onaction |
+| ListItem | Individual item | item | onselect |
 | ... | ... | ... | ... |
 
 ### 8. API Integration Points

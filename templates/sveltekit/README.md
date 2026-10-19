@@ -12,8 +12,8 @@ Templates and standards for SvelteKit application development.
 
 These templates are designed for:
 
-- **SvelteKit** - Full-stack framework
-- **Svelte 5** - UI components with runes
+- **SvelteKit 2.16 or later** - Full-stack framework
+- **Svelte 5.16 or later** - UI components with runes
 - **TypeScript** - Type-safe development
 - **type-crafter** - Type generation and decoders (optional)
 - **typesafe-api-call** - Type-safe API calls (recommended)

@@ -48,30 +48,33 @@ Before creating any types manually, check if the project uses type-crafter:
 - Create types manually in `types.ts`
 - Follow the patterns below
 
-### 3. Exception: Function-Containing Types
+### 3. Exception: Component Props and Types Holding Functions or Snippets
 
-Type-crafter cannot generate types that contain functions. These must be created manually:
+Type-crafter cannot generate types that hold functions or snippets, and it can't express optional keys. Write
+those types by hand, and every component's props type too, composed from generated types:
 
 ```typescript
-// Must be created manually - contains function
+// Must be created manually - holds callback props
 type ModuleListProps = {
   items: ModuleEntityType[];
-  onSelect?: (item: ModuleEntityType) => void;  // Function - can't be generated
-  emptyMessage?: string;
+  selectedId?: string | null;
+  variant?: 'default' | 'compact';
+  onselect: (item: ModuleEntityType) => void;  // Function - can't be generated
+  onaction?: (action: ModuleActionType, item: ModuleEntityType) => void;
 };
 
-// Must be created manually - event dispatcher types
-type ModuleEventMap = {
-  select: ModuleEntityType;
-  action: { type: ModuleActionType; data: ModuleEntityType };
+// Must be created manually - holds a snippet
+type ModuleEmptyProps = {
+  message?: string;
+  children?: Snippet;  // Snippet - can't be generated
 };
 
 // Can be generated via type-crafter - no functions
 type ModuleEntityType = {
   id: string;
   status: ModuleStatusType;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 ```
 
@@ -89,34 +92,96 @@ ls -la *.type-crafter.yaml type-crafter.config.* 2>/dev/null
 
 ### Step 2: Define Types in YAML (if available)
 
+Only the `required` array controls nullability. A field left out of it comes out as `T | null`, and the key
+stays required, so type-crafter has no optional keys. For dates, `format: date` generates a `Date` whose decoder
+also reads full timestamps, while `format: date-time` stays a `string`; the spec uses `format: date` to match the
+`Date` fields that Phase 6 works with.
+
 ```yaml
 # specs/module-name.type-crafter.yaml
-version: "1.0"
+info:
+  version: '1.0.0'
+  title: 'Module Name Types'
+
 types:
   ModuleEntityType:
-    id: string
-    status: ModuleStatusType
-    metadata: ModuleMetadata
-    createdAt: string
-    updatedAt: string
+    type: object
+    required:
+      - id
+      - status
+      - data
+      - metadata
+      - createdAt
+      - updatedAt
+    properties:
+      id:
+        type: string
+      status:
+        $ref: '#/types/ModuleStatusType'
+      data:
+        type: unknown
+      metadata:
+        $ref: '#/types/ModuleMetadata'
+      createdAt:
+        type: string
+        format: date
+      updatedAt:
+        type: string
+        format: date
 
   ModuleMetadata:
-    lastUpdated: string
-    source: string
-    version: number
+    type: object
+    required:
+      - lastUpdated
+      - source
+      - version
+    properties:
+      lastUpdated:
+        type: string
+        format: date
+      source:
+        type: string
+      version:
+        type: number
 
   ModuleStatusType:
+    type: string
     enum:
       - idle
       - loading
       - success
       - error
 
+  ModuleActionType:
+    type: string
+    enum:
+      - edit
+      - delete
+
+  ModuleSortBy:
+    type: string
+    enum:
+      - date
+      - name
+      - status
+
+  ModuleSortOrder:
+    type: string
+    enum:
+      - asc
+      - desc
+
   ModuleFilters:
-    status?: ModuleStatusType
-    search?: string
-    sortBy?: string
-    sortOrder?: string
+    type: object
+    properties:
+      status:
+        $ref: '#/types/ModuleStatusType'
+      search:
+        type: string
+      sortBy:
+        $ref: '#/types/ModuleSortBy'
+      sortOrder:
+        $ref: '#/types/ModuleSortOrder'
 ```
 
 ### Step 3: Generate Types
@@ -129,42 +194,44 @@ pnpm type-crafter generate
 ### Step 4: Import Generated Types
 
 ```typescript
-// types.ts - Import generated, define function-containing types manually
+// types.ts - Import generated types, write props types and types holding functions or snippets by hand
 
 // =============================================================================
 // Generated Type Imports (from type-crafter)
 // =============================================================================
+import type { Snippet } from 'svelte';
 import type {
   ModuleEntityType,
   ModuleMetadata,
   ModuleStatusType,
+  ModuleActionType,
   ModuleFilters
 } from '$generated/types';
 
 // Re-export for module consumers
-export type { ModuleEntityType, ModuleMetadata, ModuleStatusType, ModuleFilters };
+export type { ModuleEntityType, ModuleMetadata, ModuleStatusType, ModuleActionType, ModuleFilters };
 
 // =============================================================================
-// Manual Types (contain functions - cannot be generated)
+// Manual Types (component props and types holding functions or snippets)
 // =============================================================================
 
 /**
- * Props for list components - contains function callback
+ * Props for the list component - holds callbacks
  */
 export type ModuleListProps = {
   items: ModuleEntityType[];
-  onSelect?: (item: ModuleEntityType) => void;
-  emptyMessage?: string;
+  selectedId?: string | null;
+  variant?: 'default' | 'compact';
+  onselect: (item: ModuleEntityType) => void;
+  onaction?: (action: ModuleActionType, item: ModuleEntityType) => void;
 };
 
 /**
- * Events dispatched by module components
+ * Props for the empty state - holds a snippet
  */
-export type ModuleEventMap = {
-  select: ModuleEntityType;
-  action: { type: string; data: ModuleEntityType };
-  update: { id: string; changes: Partial<ModuleEntityType> };
-  delete: { id: string };
+export type ModuleEmptyProps = {
+  message?: string;
+  children?: Snippet;
 };
 ```
 
@@ -176,6 +243,7 @@ If type-crafter is not available, create all types manually in `types.ts`:
 // =============================================================================
 // Generated Type Imports (from API codegen if available)
 // =============================================================================
+import type { Snippet } from 'svelte';
 import type {
   GeneratedApiType,
   AnotherGeneratedType,
@@ -189,7 +257,7 @@ import type {
 /**
  * Actions available within this module
  */
-export type ModuleActionType = 'action1' | 'action2' | 'action3';
+export type ModuleActionType = 'edit' | 'delete';
 
 /**
  * Status states for module entities
@@ -229,46 +297,33 @@ export type ModuleMetadata = {
  * Filter options for the module
  */
 export type ModuleFilters = {
-  status?: ModuleStatusType;
-  search?: string;
-  sortBy?: 'date' | 'name' | 'status';
-  sortOrder?: 'asc' | 'desc';
+  status: ModuleStatusType | null;
+  search: string | null;
+  sortBy: 'date' | 'name' | 'status' | null;
+  sortOrder: 'asc' | 'desc' | null;
 };
 
 // =============================================================================
-// Component Props Types (contain functions - always manual)
+// Component Props Types (always hand-written)
 // =============================================================================
 
 /**
- * Props for the main display component
- */
-export type ModuleDisplayProps = {
-  item: ModuleEntityType;
-  variant?: 'default' | 'compact' | 'detailed';
-  showActions?: boolean;
-};
-
-/**
- * Props for list components
+ * Props for the list component - holds callbacks
  */
 export type ModuleListProps = {
   items: ModuleEntityType[];
-  onSelect?: (item: ModuleEntityType) => void;
-  emptyMessage?: string;
+  selectedId?: string | null;
+  variant?: 'default' | 'compact';
+  onselect: (item: ModuleEntityType) => void;
+  onaction?: (action: ModuleActionType, item: ModuleEntityType) => void;
 };
 
-// =============================================================================
-// Event Types (always manual - used with createEventDispatcher)
-// =============================================================================
-
 /**
- * Events dispatched by module components
+ * Props for the empty state - holds a snippet
  */
-export type ModuleEventMap = {
-  select: ModuleEntityType;
-  action: { type: ModuleActionType; data: ModuleEntityType };
-  update: { id: string; changes: Partial<ModuleEntityType> };
-  delete: { id: string };
+export type ModuleEmptyProps = {
+  message?: string;
+  children?: Snippet;
 };
 
 // =============================================================================
@@ -300,8 +355,7 @@ export type UpdateModuleEntityRequest = {
 | Entity types | Yes | Fallback | Pure data structures |
 | Union/enum types | Yes | Fallback | Simple values |
 | Filter types | Yes | Fallback | Pure data structures |
-| Props with callbacks | No | Always | Contains functions |
-| Event map types | No | Always | Used with dispatcher |
+| Component props | No | Always | Optional keys, callbacks or snippets; composed from generated types |
 | Handler types | No | Always | Function signatures |
 
 ## Naming Conventions
@@ -310,7 +364,6 @@ export type UpdateModuleEntityRequest = {
 |--------------|----------------|---------|
 | Entity | `Module` + `Entity` + `Type` | `OrderEntityType` |
 | Props | `Component` + `Props` | `OrderListProps` |
-| Events | `Module` + `EventMap` | `OrderEventMap` |
 | Status | `Module` + `Status` + `Type` | `OrderStatusType` |
 
 ## Verification
@@ -320,8 +373,7 @@ Before moving to the next phase:
 - [ ] Checked if project uses type-crafter
 - [ ] Types defined in type-crafter YAML (if available)
 - [ ] Generated types imported from `$generated/types`
-- [ ] Function-containing types created manually
+- [ ] Component props and types holding functions or snippets written by hand
 - [ ] All types use `type`, not `interface`
 - [ ] Type names are descriptive and module-prefixed
 - [ ] Component prop types are defined
-- [ ] Event types are defined

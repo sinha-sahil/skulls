@@ -7,15 +7,17 @@ Build self-contained Svelte components for the module's functionality.
 - Create components that function independently
 - Make components props-driven with minimal setup burden
 - Integrate with module store internally
-- Use event dispatching for parent communication
+- Report events to parents through callback props
 
 ## Component Principles
 
 1. **Self-Contained:** Components include all necessary logic
 2. **Props-Driven:** All customization through props
 3. **Store Integration:** Read the module store's getters internally
-4. **Event Emission:** Use createEventDispatcher for communication
+4. **Callback Props:** Report events through callback props such as `onselect`
 5. **No External Burden:** Importers shouldn't need complex setup
+6. **Runes Only:** `$props()` with a named props type, `onclick` attributes and snippets. No `export let`, `$:`,
+   `on:` directives, `<slot>`, `createEventDispatcher`, `$effect` or `tick()`
 
 ## Component Directory Structure
 
@@ -28,6 +30,53 @@ ui/
 ├── ModuleForm.svelte         # Create/edit form
 ├── ModuleLoader.svelte       # Loading state component
 └── ModuleEmpty.svelte        # Empty state component
+```
+
+## Props Types
+
+Each component's props are a named type in `types.ts`, destructured from `$props()`. Write every props type by
+hand, composed from generated types (`item: ModuleEntityType`, `Pick<…>`): type-crafter can't express optional
+keys. Events are callback props such as `onselect`, and content a parent can replace is a `Snippet`.
+
+```typescript
+import type { Snippet } from 'svelte';
+
+export type ModuleContainerProps = {
+  autoLoad?: boolean;
+  emptyMessage?: string;
+};
+
+export type ModuleListProps = {
+  items: ModuleEntityType[];
+  selectedId?: string | null;
+  variant?: 'default' | 'compact';
+  onselect: (item: ModuleEntityType) => void;
+  onaction?: (action: ModuleActionType, item: ModuleEntityType) => void;
+};
+
+export type ModuleItemProps = {
+  item: ModuleEntityType;
+  variant?: 'default' | 'compact';
+  selected?: boolean;
+  onselect: (item: ModuleEntityType) => void;
+  onaction?: (action: ModuleActionType, item: ModuleEntityType) => void;
+};
+
+export type ModuleFormProps = {
+  item?: ModuleEntityType | null;
+  mode?: 'create' | 'edit';
+  onsave: (item: ModuleEntityType) => void;
+  oncancel: () => void;
+};
+
+export type ModuleLoaderProps = {
+  message?: string;
+};
+
+export type ModuleEmptyProps = {
+  message?: string;
+  children?: Snippet;
+};
 ```
 
 ## Component Templates
@@ -48,27 +97,31 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 ```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { moduleStore } from '../store.svelte';
-  import { fetchItems } from '../remote';
+  import { moduleStore, selectItem } from '../store.svelte';
+  import { deleteItem, fetchItems } from '../remote';
   import ModuleList from './ModuleList.svelte';
   import ModuleLoader from './ModuleLoader.svelte';
   import ModuleEmpty from './ModuleEmpty.svelte';
-  import type { ModuleEntityType } from '../types';
+  import type { ModuleActionType, ModuleContainerProps, ModuleEntityType } from '../types';
 
-  // Props
-  export let autoLoad = true;
-  export let emptyMessage = 'No items found';
+  let { autoLoad = true, emptyMessage = 'No items found' }: ModuleContainerProps = $props();
 
-  // Lifecycle
   onMount(() => {
     if (autoLoad && !moduleStore.isLoaded) {
       fetchItems();
     }
   });
 
-  // Event handlers
-  function handleItemSelect(event: CustomEvent<ModuleEntityType>) {
-    // Handle selection internally or dispatch to parent
+  function handleSelect(item: ModuleEntityType) {
+    selectItem(item.id);
+  }
+
+  function handleAction(action: ModuleActionType, item: ModuleEntityType) {
+    if (action === 'delete') {
+      deleteItem(item.id);
+      return;
+    }
+    selectItem(item.id);
   }
 </script>
 
@@ -78,12 +131,17 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
   {:else if moduleStore.error !== null}
     <div class="error-state">
       <p>{moduleStore.error}</p>
-      <button on:click={() => fetchItems()}>Retry</button>
+      <button onclick={() => fetchItems()}>Retry</button>
     </div>
   {:else if moduleStore.itemCount === 0}
     <ModuleEmpty message={emptyMessage} />
   {:else}
-    <ModuleList items={moduleStore.items} on:select={handleItemSelect} />
+    <ModuleList
+      items={moduleStore.items}
+      selectedId={moduleStore.selectedItem?.id ?? null}
+      onselect={handleSelect}
+      onaction={handleAction}
+    />
   {/if}
 </div>
 
@@ -107,34 +165,16 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ```svelte
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { ModuleEntityType } from '../types';
+  import type { ModuleListProps } from '../types';
   import ModuleItem from './ModuleItem.svelte';
 
-  // Props
-  export let items: ModuleEntityType[];
-  export let selectedId: string | null = null;
-  export let variant: 'default' | 'compact' = 'default';
-
-  // Events
-  const dispatch = createEventDispatcher<{
-    select: ModuleEntityType;
-  }>();
-
-  function handleItemClick(item: ModuleEntityType) {
-    dispatch('select', item);
-  }
+  let { items, selectedId = null, variant = 'default', onselect, onaction }: ModuleListProps = $props();
 </script>
 
-<ul class="module-list {variant}">
+<ul class={['module-list', variant]}>
   {#each items as item (item.id)}
     <li>
-      <ModuleItem
-        {item}
-        {variant}
-        selected={item.id === selectedId}
-        on:click={() => handleItemClick(item)}
-      />
+      <ModuleItem {item} {variant} selected={item.id === selectedId} {onselect} {onaction} />
     </li>
   {/each}
 </ul>
@@ -157,53 +197,37 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ### ModuleItem.svelte - Individual Item
 
+The selection button marks the selected item with `aria-current`. It isn't a toggle: pressing the selected item
+again keeps it selected, so `aria-pressed` would announce the wrong state.
+
 ```svelte
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { ModuleEntityType, ModuleEventMap } from '../types';
+  import type { ModuleItemProps } from '../types';
   import { formatDate, formatStatus } from '../utils';
 
-  // Props
-  export let item: ModuleEntityType;
-  export let variant: 'default' | 'compact' = 'default';
-  export let selected = false;
-  export let showActions = true;
-
-  // Events
-  const dispatch = createEventDispatcher<ModuleEventMap>();
-
-  function handleAction(type: string) {
-    dispatch('action', { type, data: item });
-  }
+  let { item, variant = 'default', selected = false, onselect, onaction }: ModuleItemProps = $props();
 </script>
 
-<article
-  class="module-item {variant}"
-  class:selected
-  on:click
-  on:keypress
-  role="button"
-  tabindex="0"
->
-  <div class="item-content">
-    <h3 class="item-title">{item.id}</h3>
+<div class={['module-item', variant, { selected }]}>
+  <button class="item-content" aria-current={selected} onclick={() => onselect(item)}>
+    <span class="item-title">{item.id}</span>
     <span class="item-status status-{item.status}">
       {formatStatus(item.status)}
     </span>
     <time class="item-date">{formatDate(item.createdAt)}</time>
-  </div>
+  </button>
 
-  {#if showActions && variant !== 'compact'}
+  {#if onaction && variant !== 'compact'}
     <div class="item-actions">
-      <button on:click|stopPropagation={() => handleAction('edit')}>
+      <button onclick={() => onaction('edit', item)}>
         Edit
       </button>
-      <button on:click|stopPropagation={() => handleAction('delete')}>
+      <button onclick={() => onaction('delete', item)}>
         Delete
       </button>
     </div>
   {/if}
-</article>
+</div>
 
 <style>
   .module-item {
@@ -214,7 +238,6 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
     background: var(--color-surface, #fff);
     border: 1px solid var(--color-border, #ddd);
     border-radius: 0.5rem;
-    cursor: pointer;
     transition: background 0.2s;
   }
 
@@ -235,11 +258,18 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
     display: flex;
     align-items: center;
     gap: 1rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
   }
 
   .item-title {
-    margin: 0;
     font-size: 1rem;
+    font-weight: 600;
   }
 
   .item-status {
@@ -269,29 +299,19 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ```svelte
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { ModuleEntityType, CreateModuleEntityRequest } from '../types';
+  import { untrack } from 'svelte';
+  import type { ModuleEntityType, CreateModuleEntityRequest, ModuleFormProps } from '../types';
   import { createItem, updateItemRemote } from '../remote';
 
-  // Props
-  export let item: ModuleEntityType | null = null;
-  export let mode: 'create' | 'edit' = 'create';
+  let { item = null, mode = 'create', onsave, oncancel }: ModuleFormProps = $props();
 
-  // Events
-  const dispatch = createEventDispatcher<{
-    submit: ModuleEntityType;
-    cancel: void;
-  }>();
-
-  // Form state
-  let formData = {
-    name: item?.id || '',
+  let formData = $state({
+    name: untrack(() => item?.id || ''),
     // Add other fields as needed
-  };
-  let isSubmitting = false;
-  let errors: Record<string, string> = {};
+  });
+  let isSubmitting = $state(false);
+  let errors = $state<Record<string, string>>({});
 
-  // Validation
   function validate(): boolean {
     errors = {};
     if (!formData.name.trim()) {
@@ -300,8 +320,8 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
     return Object.keys(errors).length === 0;
   }
 
-  // Submit handler
-  async function handleSubmit() {
+  async function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
     if (!validate()) return;
 
     isSubmitting = true;
@@ -318,19 +338,15 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
       }
 
       if (result) {
-        dispatch('submit', result);
+        onsave(result);
       }
     } finally {
       isSubmitting = false;
     }
   }
-
-  function handleCancel() {
-    dispatch('cancel');
-  }
 </script>
 
-<form on:submit|preventDefault={handleSubmit} class="module-form">
+<form onsubmit={handleSubmit} class="module-form">
   <div class="form-field">
     <label for="name">Name</label>
     <input
@@ -347,7 +363,7 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
   <!-- Add more form fields as needed -->
 
   <div class="form-actions">
-    <button type="button" on:click={handleCancel} disabled={isSubmitting}>
+    <button type="button" onclick={oncancel} disabled={isSubmitting}>
       Cancel
     </button>
     <button type="submit" disabled={isSubmitting}>
@@ -396,11 +412,13 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ```svelte
 <script lang="ts">
-  export let message = 'Loading...';
+  import type { ModuleLoaderProps } from '../types';
+
+  let { message = 'Loading...' }: ModuleLoaderProps = $props();
 </script>
 
 <div class="loader">
-  <div class="spinner" />
+  <div class="spinner"></div>
   <p>{message}</p>
 </div>
 
@@ -432,18 +450,14 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ```svelte
 <script lang="ts">
-  export let message = 'No items found';
-  export let showAction = false;
-  export let actionLabel = 'Create New';
+  import type { ModuleEmptyProps } from '../types';
+
+  let { message = 'No items found', children }: ModuleEmptyProps = $props();
 </script>
 
 <div class="empty-state">
   <p>{message}</p>
-  {#if showAction}
-    <button on:click>
-      {actionLabel}
-    </button>
-  {/if}
+  {@render children?.()}
 </div>
 
 <style>
@@ -460,14 +474,43 @@ export { default as ModuleEmpty } from './ModuleEmpty.svelte';
 
 ## Component Patterns
 
-### Event Dispatching
+### Callback Props
 
-```typescript
-const dispatch = createEventDispatcher<{
-  eventName: EventPayloadType;
-}>();
+A child reports an event by calling a callback prop, such as `onselect(item)`. The parent passes a function like
+any other prop:
 
-dispatch('eventName', payload);
+```svelte
+<script lang="ts">
+  import { moduleStore, selectItem } from '../store.svelte';
+  import type { ModuleEntityType } from '../types';
+  import ModuleList from './ModuleList.svelte';
+
+  function handleSelect(item: ModuleEntityType) {
+    selectItem(item.id);
+  }
+</script>
+
+<ModuleList
+  items={moduleStore.items}
+  selectedId={moduleStore.selectedItem?.id ?? null}
+  onselect={handleSelect}
+/>
+```
+
+### Snippets
+
+Content between a component's tags becomes its `children` snippet, which the component renders with
+`{@render children?.()}`. Other replaceable regions are named `Snippet` props, passed with `{#snippet name()}`.
+
+```svelte
+<script lang="ts">
+  import { fetchItems } from '../remote';
+  import ModuleEmpty from './ModuleEmpty.svelte';
+</script>
+
+<ModuleEmpty message="No items yet">
+  <button onclick={() => fetchItems()}>Reload</button>
+</ModuleEmpty>
 ```
 
 ### Reading the Store
@@ -485,8 +528,9 @@ dispatch('eventName', payload);
 {/if}
 ```
 
-Read getters in markup, where they stay reactive. A copy made in the script, such as `const { items } = moduleStore`
-or `$: items = moduleStore.items`, never updates. `$moduleStore` throws: the getter object is not a Svelte store.
+Read getters in markup or `$derived`, where they stay reactive. A copy made in the script, such as
+`const { items } = moduleStore` or `let items = moduleStore.items`, never updates. `$moduleStore` throws: the getter
+object is not a Svelte store.
 
 ### Conditional Rendering
 
@@ -506,9 +550,10 @@ Before moving to the next phase:
 
 - [ ] All planned components are created
 - [ ] Components are exported from ui/index.ts
-- [ ] Components use props for customization
+- [ ] Props come from `$props()`, typed by a named props type
 - [ ] Components read store getters directly, without subscriptions or copies
-- [ ] Events are dispatched for parent communication
+- [ ] Events reach parents through callback props such as `onselect`
+- [ ] No `export let`, `$:`, `on:` directives, `<slot>`, `createEventDispatcher`, `$effect` or `tick()`
 - [ ] Loading and error states are handled
 - [ ] Components are accessible (keyboard, ARIA)
 - [ ] Styles are scoped to components

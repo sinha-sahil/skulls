@@ -25,7 +25,6 @@ export type {
   ModuleEntityType,
   ModuleStatusType,
   ModuleFilters,
-  ModuleEventMap,
   CreateModuleEntityRequest,
   UpdateModuleEntityRequest
 } from './types';
@@ -146,16 +145,18 @@ const newItem = await createItem({
 
 ```svelte
 <script lang="ts">
-  import { ModuleItem, type ModuleEntityType } from '$client/modules/module-name';
+  import { ModuleItem, moduleStore, type ModuleEntityType } from '$client/modules/module-name';
 
-  export let item: ModuleEntityType;
+  let selectedId = $state<string | null>(null);
 
-  function handleSelect(event: CustomEvent<ModuleEntityType>) {
-    console.log('Selected:', event.detail);
+  function handleSelect(item: ModuleEntityType) {
+    selectedId = item.id;
   }
 </script>
 
-<ModuleItem {item} variant="compact" on:select={handleSelect} />
+{#each moduleStore.items as item (item.id)}
+  <ModuleItem {item} variant="compact" selected={item.id === selectedId} onselect={handleSelect} />
+{/each}
 ```
 
 ## Independence Testing
